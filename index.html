@@ -18,6 +18,9 @@
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Prompt:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
     <!-- CSS Stylesheet -->
     <link rel="stylesheet" href="style.css">
 
@@ -776,6 +779,22 @@
                         </table>
                     </div>
                 </div>
+
+                <!-- Planting Location Map -->
+                <div class="dash-block map-block">
+                    <div class="map-header">
+                        <h3><i class="fa-solid fa-map-location-dot"></i> แผนที่แสดงพิกัดพื้นที่ปลูกกาแฟของสมาชิก</h3>
+                        <span class="map-subtitle">ปักหมุดตำแหน่งแปลงปลูกแบบเรียลไทม์ (จำแนกตามรายอำเภอ/พื้นที่ลงทะเบียน)</span>
+                    </div>
+                    <div class="map-container-wrapper">
+                        <div id="planting-map"></div>
+                        <div class="map-legend">
+                            <div class="legend-item"><span class="legend-dot current-pin"></span> สมาชิกใหม่ (วันนี้)</div>
+                            <div class="legend-item"><span class="legend-dot active-pin"></span> พื้นที่แปลงปลูกสะสม</div>
+                            <div class="legend-item"><span class="legend-dot hub-pin"><i class="fa-solid fa-store" style="font-size: 8px; color: #fff;"></i></span> ศูนย์ประสานงานหลัก (456 Café)</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -901,6 +920,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Leaflet Map JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
     <script src="app.js"></script>
 </body>
 

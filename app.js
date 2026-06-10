@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
     initCalculator();
     initDashboardChart();
+    initPlantingMap();
     setupPDFDownloadMock();
     fetchDashboardData();
     
@@ -1408,6 +1409,9 @@ function fetchDashboardData() {
                 
                 // Recalculate and update chart
                 rebuildChart(data.registrations || []);
+                
+                // Update map markers with the locations
+                updateMapMarkers(data.registrations || []);
             }
         })
         .catch(err => {
@@ -1616,3 +1620,153 @@ window.addEventListener('click', (e) => {
         }
     });
 });
+
+/* ==========================================================================
+   REAL-TIME LOCATION MAP (LEAFLET MAP INTEGRATION)
+   ========================================================================== */
+
+// Predefined coordinates for Kalasin districts and major cities to match input texts
+const DISTRICT_COORDINATES = {
+    // Kalasin Districts
+    'เมืองกาฬสินธุ์': { lat: 16.4322, lng: 103.5065 },
+    'กุฉินารายณ์': { lat: 16.5333, lng: 104.0500 },
+    'เขาวง': { lat: 16.6903, lng: 104.0922 },
+    'ยางตลาด': { lat: 16.4022, lng: 103.3794 },
+    'กมลาไสย': { lat: 16.3375, lng: 103.5756 },
+    'สหัสขันธ์': { lat: 16.7136, lng: 103.5175 },
+    'ห้วยเม็ก': { lat: 16.5869, lng: 103.2325 },
+    'ท่าคันโท': { lat: 16.9625, lng: 103.2289 },
+    'หนองกุงศรี': { lat: 16.8181, lng: 103.2981 },
+    'สมเด็จ': { lat: 16.7028, lng: 103.7483 },
+    'ห้วยผึ้ง': { lat: 16.6194, lng: 103.9069 },
+    'คำม่วง': { lat: 16.8925, lng: 103.6264 },
+    'สามชัย': { lat: 16.9850, lng: 103.5233 },
+    'นามน': { lat: 16.5681, lng: 103.7844 },
+    'ดอนจาน': { lat: 16.4047, lng: 103.6883 },
+    'ฆ้องชัย': { lat: 16.2736, lng: 103.4475 },
+    'ร่องคำ': { lat: 16.2625, lng: 103.7314 },
+    'นาคู': { lat: 16.5925, lng: 104.0253 },
+    
+    // Neighboring areas
+    'สกลนคร': { lat: 17.1636, lng: 104.1481 },
+    'กุดบาก': { lat: 17.0942, lng: 103.8208 },
+    'พรรณานิคม': { lat: 17.3486, lng: 103.8569 },
+    'มุกดาหาร': { lat: 16.5414, lng: 104.7244 },
+    'ร้อยเอ็ด': { lat: 16.0539, lng: 103.6522 },
+    'มหาสารคาม': { lat: 16.1850, lng: 103.3008 },
+    'ขอนแก่น': { lat: 16.4322, lng: 102.8236 },
+    'อุดรธานี': { lat: 17.4139, lng: 102.7875 }
+};
+
+let leafletMap = null;
+let markerGroup = null;
+
+function initPlantingMap() {
+    const mapElement = document.getElementById('planting-map');
+    if (!mapElement) return;
+    
+    // Center of Kalasin
+    const centerLat = 16.6000;
+    const centerLng = 103.7000;
+    
+    // Initialize map
+    leafletMap = L.map('planting-map', {
+        center: [centerLat, centerLng],
+        zoom: 9,
+        scrollWheelZoom: false // disable zoom on scroll to prevent page navigation disruption
+    });
+    
+    // Add CartoDB Positron clean map tiles
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 20
+    }).addTo(leafletMap);
+    
+    // Add 456 Cafe Hub coordinates (Kuchinarai / Khao Wong area)
+    const hubIcon = L.divIcon({
+        className: 'custom-map-marker',
+        html: '<div class="marker-pin hub-marker" style="background: #3d271d; border-color: #c5a880;"><i class="fa-solid fa-store" style="font-size: 8px; color: #fff; transform: rotate(45deg); display: block; margin-left: 1px; margin-top: 1px;"></i></div>',
+        iconSize: [30, 30],
+        iconAnchor: [15, 30]
+    });
+    
+    L.marker([16.6903, 104.0922], { icon: hubIcon })
+        .addTo(leafletMap)
+        .bindPopup('<strong>📍 456 Café (ศูนย์ประสานงานหลัก)</strong><br/>จุดรับต้นกล้าและแปรรูปกาแฟ');
+        
+    markerGroup = L.layerGroup().addTo(leafletMap);
+}
+
+function findCoordinatesForArea(areaText) {
+    const text = String(areaText || '').trim();
+    if (!text) return null;
+    
+    // Check our dictionary of districts
+    for (const [key, coords] of Object.entries(DISTRICT_COORDINATES)) {
+        if (text.includes(key)) {
+            return { ...coords }; // return a copy
+        }
+    }
+    return null;
+}
+
+function updateMapMarkers(registrations) {
+    if (!leafletMap || !markerGroup) return;
+    
+    // Clear existing markers
+    markerGroup.clearLayers();
+    
+    const countPerCoords = {}; // track how many markers are at the same coordinates to apply jitter
+    
+    registrations.forEach(reg => {
+        let coords = findCoordinatesForArea(reg.plantingarea) || findCoordinatesForArea(reg.address);
+        
+        // If not found, default to center of Kalasin
+        if (!coords) {
+            coords = { lat: 16.4322, lng: 103.5065 };
+        }
+        
+        // Apply tiny random jitter if multiple markers are in the same district/coordinates
+        const key = `${coords.lat.toFixed(4)},${coords.lng.toFixed(4)}`;
+        if (!countPerCoords[key]) {
+            countPerCoords[key] = 0;
+        }
+        countPerCoords[key]++;
+        
+        if (countPerCoords[key] > 1) {
+            // Apply slight random offset (approx 500m - 1km)
+            coords.lat += (Math.random() - 0.5) * 0.012;
+            coords.lng += (Math.random() - 0.5) * 0.012;
+        }
+        
+        // Determine pin type (today's registration glows green)
+        const isToday = reg.timestamp && (new Date(reg.timestamp).toDateString() === new Date().toDateString());
+        const markerClass = isToday ? 'marker-pin glowing' : 'marker-pin';
+        
+        const pinIcon = L.divIcon({
+            className: 'custom-map-marker',
+            html: `<div class="${markerClass}"></div>`,
+            iconSize: [24, 24],
+            iconAnchor: [12, 24]
+        });
+        
+        const maskedName = reg.fullname ? (reg.fullname.length > 10 ? reg.fullname.substring(0, 8) + '...' : reg.fullname) : 'ผู้สนับสนุน';
+        const qtyText = `${reg.qty} ${reg.bookingMode === 'rai' ? 'ไร่' : 'ต้น'}`;
+        const typeText = reg.seedlingType || '';
+        
+        const popupContent = `
+            <div style="font-family: 'Prompt', sans-serif; font-size: 13px; color: #3d271d; line-height: 1.5;">
+                <strong style="color: #2c5e43;">🌱 แปลงปลูกสมาชิก</strong><br/>
+                • <b>รหัสสมาชิก:</b> ${reg.memberId}<br/>
+                • <b>ชื่อ:</b> ${maskedName}<br/>
+                • <b>จำนวนจอง:</b> ${qtyText} (${typeText})<br/>
+                • <b>พื้นที่แปลง:</b> ${reg.plantingarea || '-'}
+            </div>
+        `;
+        
+        L.marker([coords.lat, coords.lng], { icon: pinIcon })
+            .bindPopup(popupContent)
+            .addTo(markerGroup);
+    });
+}
