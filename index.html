@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โครงการ "1 ต้น 1 ความหวัง" | 456 Café กาแฟกาฬสินธุ์บ้านเฮา</title>
+    <meta name="description" content="ร่วมเป็นส่วนหนึ่งในโครงการ 1 ต้น 1 ความหวัง ร่วมปลูกกาแฟคุณภาพ สร้างรายได้ให้เกษตรกร และสนับสนุนชุมชน โดยวิสาหกิจชุมชนแปรรูปกาแฟ 456">
+    
+    <!-- Google Fonts: Prompt & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Background Decor Elements -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <!-- Navigation Header -->
+    <header class="app-header">
+        <div class="container navbar">
+            <div class="logo-area">
+                <img src="./logo 456 cafe_1.png" alt="456 Café Logo" class="brand-logo" onerror="this.src='https://placehold.co/80x80?text=456';">
+                <div class="logo-text">
+                    <span class="brand-name">456 Café</span>
+                    <span class="brand-sub">วิสาหกิจชุมชนแปรรูปกาแฟ 456</span>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="#about" class="nav-link"><i class="fa-solid fa-circle-info"></i> รายละเอียด</a>
+                <a href="#benefits" class="nav-link"><i class="fa-solid fa-gift"></i> สิทธิประโยชน์</a>
+                <a href="#register" class="nav-link btn-nav-register"><i class="fa-solid fa-file-signature"></i> สมัครเข้าร่วม</a>
+                <a href="#dashboard" class="nav-link"><i class="fa-solid fa-chart-line"></i> แดชบอร์ด</a>
+            </nav>
+            <div class="mobile-menu-btn" id="mobile-menu-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav" id="mobile-nav">
+        <a href="#about" class="mobile-nav-link">รายละเอียดโครงการ</a>
+        <a href="#benefits" class="mobile-nav-link">สิทธิประโยชน์</a>
+        <a href="#register" class="mobile-nav-link">สมัครเข้าร่วมโครงการ</a>
+        <a href="#dashboard" class="mobile-nav-link">แดชบอร์ดผู้จัดงาน</a>
+    </div>
+
+    <!-- Hero / Landing Section -->
+    <section class="hero-section" id="about">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <div class="badge-accent">โครงการพิเศษประจำปี 2026</div>
+                <h1 class="hero-title">“1 ต้น 1 ความหวัง”</h1>
+                <p class="hero-subtitle">กาแฟท้องถิ่น กาฬสินธุ์บ้านเฮา</p>
+                <p class="hero-desc">
+                    ร่วมเป็นส่วนหนึ่งในการสร้างอนาคตกาแฟสายพันธุ์กาฬสินธุ์ ร่วมปลูกกาแฟคุณภาพ สร้างอาชีพ สร้างรายได้ที่ยั่งยืนให้แก่เกษตรกรในท้องถิ่น และเพิ่มพื้นที่สีเขียวให้บ้านเฮา
+                </p>
+                
+                <div class="target-card">
+                    <div class="target-info">
+                        <span class="target-label">เป้าหมายโครงการ</span>
+                        <span class="target-number">4,560 <small>ต้น</small></span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="target-progress" style="width: 62.5%;"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span>จองแล้ว 2,850 ต้น (62.5%)</span>
+                        <span>คงเหลือ 1,710 ต้น</span>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <a href="#register" class="btn btn-primary btn-large">
+                        <i class="fa-solid fa-leaf"></i> สมัครร่วมโครงการเลย
+                    </a>
+                    <a href="#benefits" class="btn btn-secondary btn-large">
+                        ดูสิทธิประโยชน์สมาชิก <i class="fa-solid fa-arrow-down"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="hero-image-area">
+                <div class="hero-glass-card">
+                    <img src="./project 456.png" alt="1 ต้น 1 ความหวัง Infographic" class="hero-infographic" onerror="this.src='https://placehold.co/600x400/3E2723/FFFFFF?text=1+ต้น+1+ความหวัง';">
+                    <div class="quote-card">
+                        <i class="fa-solid fa-quote-left quote-icon"></i>
+                        <p class="quote-text">ปลูกวันนี้ เพื่ออนาคตที่ยั่งยืน</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Pillars Section -->
+    <section class="pillars-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>ความสำคัญของโครงการ</h2>
+                <div class="header-divider"></div>
+            </div>
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <div class="pillar-icon"><i class="fa-solid fa-hands-holding-child"></i></div>
+                    <h3>สนับสนุนชุมชน</h3>
+                    <p>ส่งเสริมวิสาหกิจชุมชนและการแปรรูปกาแฟในพื้นที่อำเภอเขาวง จังหวัดกาฬสินธุ์</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon"><i class="fa-solid fa-tree"></i></div>
+                    <h3>เพิ่มพื้นที่สีเขียว</h3>
+                    <p>สร้างสมดุลทางธรรมชาติและเพิ่มโอโซนให้แก่ผืนดินกาฬสินธุ์ด้วยต้นกาแฟสายพันธุ์ดี</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon"><i class="fa-solid fa-briefcase"></i></div>
+                    <h3>สร้างอาชีพ & รายได้</h3>
+                    <p>ช่วยให้เกษตรกรท้องถิ่นมีช่องทางทำกินที่มั่นคง มีการรับซื้อผลผลิตในราคาที่เป็นธรรม</p>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-icon"><i class="fa-solid fa-award"></i></div>
+                    <h3>สิทธิประโยชน์สมาชิก</h3>
+                    <p>ผู้จองจะได้รับสิทธิ์และส่วนลดพิเศษจากผลิตภัณฑ์วิสาหกิจชุมชนตลอดชีพ</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits-section" id="benefits">
+        <div class="container">
+            <div class="benefits-container-glass">
+                <div class="benefits-text-side">
+                    <div class="badge-accent">EXCLUSIVE PRIVILEGES</div>
+                    <h2>สิทธิประโยชน์สำหรับสมาชิก</h2>
+                    <p>ทุกๆ การจองต้นกาแฟ "1 ต้น 1 ความหวัง" คุณจะได้รับเอกสารสิทธิ์และสิทธิพิเศษจากวิสาหกิจชุมชนแปรรูปกาแฟ 456 ดังนี้</p>
+                    
+                    <ul class="benefits-list">
+                        <li>
+                            <span class="benefit-number">1</span>
+                            <div class="benefit-desc">
+                                <strong>ใบรับรองสมาชิก (MOU Certificate)</strong>
+                                <p>เอกสารรับรองสิทธิ์การร่วมสนับสนุนโครงการอย่างเป็นทางการ</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="benefit-number">2</span>
+                            <div class="benefit-desc">
+                                <strong>ป้ายชื่อติดในแปลงปลูกจริง</strong>
+                                <p>ติดป้ายชื่อของคุณบนต้นกาแฟที่คุณเป็นผู้สนับสนุนในพื้นที่แปลงสาธิต</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="benefit-number">3</span>
+                            <div class="benefit-desc">
+                                <strong>รายงานการเจริญเติบโตประจำปี</strong>
+                                <p>ภาพถ่ายและข้อมูลอัปเดตการดูแลเติบโตของต้นกาแฟส่งตรงถึงคุณ</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="benefit-number">4</span>
+                            <div class="benefit-desc">
+                                <strong>ส่วนลดพิเศษผลิตภัณฑ์ 456 Coffee</strong>
+                                <p>ส่วนลดพิเศษสำหรับเมล็ดกาแฟและเครื่องดื่มแบรนด์ 456 Coffee</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="benefit-number">5</span>
+                            <div class="benefit-desc">
+                                <strong>สิทธิร่วมกิจกรรมวิสาหกิจชุมชน</strong>
+                                <p>เชิญร่วมกิจกรรมเก็บเกี่ยวผลผลิตและเวิร์กชอปคั่วกาแฟประจำปี</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="benefit-number">6</span>
+                            <div class="benefit-desc">
+                                <strong>สิทธิ์ซื้อกาแฟรุ่นพิเศษ (Micro-lot)</strong>
+                                <p>สิทธิ์ในการจองกาแฟคัดพิเศษเฉพาะฤดูกาลก่อนใคร</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="benefits-visual-side">
+                    <img src="./infor mou 456.png" alt="โครงการ 1 ต้น 1 ความหวัง รายละเอียด" class="benefits-infographic" onerror="this.src='https://placehold.co/400x500/2E1C0C/FFFFFF?text=สิทธิประโยชน์';">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Wizard Form Section -->
+    <section class="register-section" id="register">
+        <div class="container">
+            <div class="section-header">
+                <h2>ลงทะเบียนเข้าร่วมโครงการ</h2>
+                <p>กรุณากรอกข้อมูลให้ครบถ้วนเพื่อร่วมจองต้นกาแฟและรับใบรับรองสิทธิ์ (MOU)</p>
+                <div class="header-divider"></div>
+            </div>
+
+            <!-- Wizard Card -->
+            <div class="wizard-card" id="wizard-container">
+                <!-- Step Progress Header -->
+                <div class="wizard-header">
+                    <div class="step-indicator active" id="indicator-1">
+                        <span class="step-icon"><i class="fa-solid fa-user"></i></span>
+                        <span class="step-label">ข้อมูลผู้สมัคร</span>
+                    </div>
+                    <div class="step-line" id="line-1"></div>
+                    <div class="step-indicator" id="indicator-2">
+                        <span class="step-icon"><i class="fa-solid fa-leaf"></i></span>
+                        <span class="step-label">จำนวนจอง</span>
+                    </div>
+                    <div class="step-line" id="line-2"></div>
+                    <div class="step-indicator" id="indicator-3">
+                        <span class="step-icon"><i class="fa-solid fa-check-double"></i></span>
+                        <span class="step-label">ยืนยันสิทธิ์</span>
+                    </div>
+                </div>
+
+                <!-- Wizard Steps Form -->
+                <form id="registration-form" onsubmit="return false;">
+                    
+                    <!-- STEP 1: Welcome & Basic Info -->
+                    <div class="wizard-step active-step" id="step-1">
+                        <div class="step-content text-center">
+                            <div class="welcome-badge">ยินดีต้อนรับเข้าสู่ระบบจอง</div>
+                            <h3 class="step-title">กรุณากรอกชื่อ-นามสกุลของคุณ</h3>
+                            <p class="step-desc">ชื่อนี้จะปรากฏในใบสำคัญตกลงร่วมมือ (MOU) และป้ายชื่อต้นกาแฟ</p>
+                            
+                            <div class="form-group">
+                                <label for="input-fullname" class="form-label">ชื่อ - นามสกุล *</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-user input-icon"></i>
+                                    <input type="text" id="input-fullname" class="form-input" placeholder="ตัวอย่าง: สมชาย รักดี" required>
+                                </div>
+                                <span class="error-msg" id="err-fullname">กรุณากรอกชื่อ-นามสกุล</span>
+                            </div>
+
+                            <div class="step-buttons">
+                                <button type="button" class="btn btn-primary btn-next" onclick="goToStep(2)">
+                                    ถัดไป <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: Phone Number -->
+                    <div class="wizard-step" id="step-2">
+                        <div class="step-content text-center">
+                            <h3 class="step-title">เบอร์โทรศัพท์สำหรับติดต่อ</h3>
+                            <p class="step-desc">เพื่อใช้ประสานงานและแจ้งข่าวสารความคืบหน้าโครงการ</p>
+                            
+                            <div class="form-group">
+                                <label for="input-phone" class="form-label">เบอร์โทรศัพท์ *</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-phone input-icon"></i>
+                                    <input type="tel" id="input-phone" class="form-input" placeholder="ตัวอย่าง: 0985652966" required>
+                                </div>
+                                <span class="error-msg" id="err-phone">กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (10 หลัก)</span>
+                            </div>
+
+                            <div class="step-buttons">
+                                <button type="button" class="btn btn-secondary btn-back" onclick="goToStep(1)">
+                                    <i class="fa-solid fa-arrow-left"></i> ย้อนกลับ
+                                </button>
+                                <button type="button" class="btn btn-primary btn-next" onclick="goToStep(3)">
+                                    ถัดไป <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: Line ID -->
+                    <div class="wizard-step" id="step-3">
+                        <div class="step-content text-center">
+                            <h3 class="step-title">กรอก LINE ID ของคุณ</h3>
+                            <p class="step-desc">สำหรับรับรายงานภาพความคืบหน้าและการส่งใบสำคัญ MOU</p>
+                            
+                            <div class="form-group">
+                                <label for="input-lineid" class="form-label">LINE ID *</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-brands fa-line input-icon" style="color: #06C755;"></i>
+                                    <input type="text" id="input-lineid" class="form-input" placeholder="ตัวอย่าง: lineid123" required>
+                                </div>
+                                <span class="error-msg" id="err-lineid">กรุณากรอก LINE ID</span>
+                            </div>
+
+                            <div class="step-buttons">
+                                <button type="button" class="btn btn-secondary btn-back" onclick="goToStep(2)">
+                                    <i class="fa-solid fa-arrow-left"></i> ย้อนกลับ
+                                </button>
+                                <button type="button" class="btn btn-primary btn-next" onclick="goToStep(4)">
+                                    ถัดไป <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: Email -->
+                    <div class="wizard-step" id="step-4">
+                        <div class="step-content text-center">
+                            <h3 class="step-title">กรอกที่อยู่อีเมล</h3>
+                            <p class="step-desc">ระบบจะส่งไฟล์ PDF MOU และข้อมูลลงทะเบียนเข้าสู่อีเมลนี้ (หากไม่มีให้พิมพ์ -)</p>
+                            
+                            <div class="form-group">
+                                <label for="input-email" class="form-label">อีเมล (หากไม่มีกรอก "-") *</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-envelope input-icon"></i>
+                                    <input type="text" id="input-email" class="form-input" placeholder="ตัวอย่าง: email@domain.com หรือ -" required>
+                                </div>
+                                <span class="error-msg" id="err-email">กรุณากรอกรูปแบบอีเมลที่ถูกต้อง หรือใส่เครื่องหมาย "-"</span>
+                            </div>
+
+                            <div class="step-buttons">
+                                <button type="button" class="btn btn-secondary btn-back" onclick="goToStep(3)">
+                                    <i class="fa-solid fa-arrow-left"></i> ย้อนกลับ
+                                </button>
+                                <button type="button" class="btn btn-primary btn-next" onclick="goToStep(5)">
+                                    ถัดไป <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 5: Quantity & Real-time Calculation -->
+                    <div class="wizard-step" id="step-5">
+                        <div class="step-content">
+                            <h3 class="step-title text-center">จำนวนต้นกาแฟที่ต้องการจอง</h3>
+                            <p class="step-desc text-center">ราคาจองร่วมสนับสนุนโครงการต้นละ <strong>100 บาท</strong> เท่านั้น</p>
+                            
+                            <div class="qty-control-area">
+                                <label for="input-qty" class="form-label text-center">จำนวนต้นกาแฟ (ต้น)</label>
+                                
+                                <div class="qty-counter">
+                                    <button type="button" class="btn-qty-adjust" onclick="adjustQty(-1)"><i class="fa-solid fa-minus"></i></button>
+                                    <input type="number" id="input-qty" class="qty-input" value="20" min="1" max="1000" oninput="updateCalculator()">
+                                    <button type="button" class="btn-qty-adjust" onclick="adjustQty(1)"><i class="fa-solid fa-plus"></i></button>
+                                </div>
+
+                                <div class="slider-wrapper">
+                                    <input type="range" id="qty-slider" class="qty-slider" min="1" max="100" value="20" oninput="syncSliderToInput(this.value)">
+                                    <div class="slider-labels">
+                                        <span>1 ต้น</span>
+                                        <span>50 ต้น</span>
+                                        <span>100 ต้น</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Calculation Receipt Card -->
+                            <div class="receipt-card">
+                                <h4 class="receipt-header"><i class="fa-solid fa-calculator"></i> ตัวอย่างการคำนวณยอดเงิน</h4>
+                                <div class="receipt-row">
+                                    <span>จำนวนต้นกาแฟที่จอง:</span>
+                                    <span id="calc-qty">20 ต้น</span>
+                                </div>
+                                <div class="receipt-row">
+                                    <span>ราคาต่อต้น:</span>
+                                    <span>100 บาท</span>
+                                </div>
+                                <div class="receipt-divider"></div>
+                                <div class="receipt-row total-row">
+                                    <span>รวมทั้งหมดที่ต้องชำระ:</span>
+                                    <span class="total-price" id="calc-total">2,000 บาท</span>
+                                </div>
+                            </div>
+
+                            <div class="step-buttons">
+                                <button type="button" class="btn btn-secondary btn-back" onclick="goToStep(4)">
+                                    <i class="fa-solid fa-arrow-left"></i> ย้อนกลับ
+                                </button>
+                                <button type="button" class="btn btn-primary btn-next" onclick="goToStep(6)">
+                                    ตรวจสอบความถูกต้อง <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 6: Confirm details -->
+                    <div class="wizard-step" id="step-6">
+                        <div class="step-content">
+                            <h3 class="step-title text-center"><i class="fa-solid fa-clipboard-check" style="color: var(--accent-gold);"></i> ตรวจสอบข้อมูลก่อนการบันทึก</h3>
+                            <p class="step-desc text-center">กรุณาตรวจสอบความถูกต้องของข้อมูลทั้งหมดก่อนกดยืนยันการจอง</p>
+                            
+                            <div class="confirm-grid">
+                                <div class="confirm-item">
+                                    <span class="confirm-label">ชื่อ-นามสกุล:</span>
+                                    <span class="confirm-value" id="confirm-name">-</span>
+                                </div>
+                                <div class="confirm-item">
+                                    <span class="confirm-label">เบอร์โทรศัพท์:</span>
+                                    <span class="confirm-value" id="confirm-phone">-</span>
+                                </div>
+                                <div class="confirm-item">
+                                    <span class="confirm-label">LINE ID:</span>
+                                    <span class="confirm-value" id="confirm-line">-</span>
+                                </div>
+                                <div class="confirm-item">
+                                    <span class="confirm-label">อีเมล:</span>
+                                    <span class="confirm-value" id="confirm-email">-</span>
+                                </div>
+                                <div class="confirm-item highlight">
+                                    <span class="confirm-label">จำนวนต้นที่จอง:</span>
+                                    <span class="confirm-value text-green" id="confirm-qty">0 ต้น</span>
+                                </div>
+                                <div class="confirm-item highlight">
+                                    <span class="confirm-label">ยอดชำระร่วมโครงการ:</span>
+                                    <span class="confirm-value text-gold" id="confirm-total">0 บาท</span>
+                                </div>
+                            </div>
+
+                            <div class="step-buttons">
+                                <button type="button" class="btn btn-secondary btn-back" onclick="goToStep(5)">
+                                    <i class="fa-solid fa-edit"></i> แก้ไขข้อมูล
+                                </button>
+                                <button type="button" class="btn btn-success btn-next" onclick="submitRegistration()">
+                                    <i class="fa-solid fa-check"></i> ยืนยันข้อมูลถูกต้อง
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 7: Saving animation / Progress -->
+                    <div class="wizard-step" id="step-7">
+                        <div class="step-content text-center py-5">
+                            <div class="saving-loader">
+                                <div class="coffee-bean-loader">
+                                    <i class="fa-solid fa-leaf spin-icon"></i>
+                                </div>
+                            </div>
+                            <h3 class="step-title">กำลังบันทึกข้อมูลและส่งไปยังอีเมล...</h3>
+                            <p class="step-desc">ระบบกำลังสร้างใบสำคัญ MOU และส่งข้อมูลไปยัง Google Sheets โปรดรอสักครู่</p>
+                            
+                            <div class="saving-progress-container">
+                                <div class="saving-progress-bar" id="saving-progress"></div>
+                            </div>
+                            <div class="saving-status" id="saving-status-text">กำลังเชื่อมต่อฐานข้อมูล...</div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 8: Success Screen -->
+                    <div class="wizard-step" id="step-8">
+                        <div class="step-content text-center">
+                            <div class="success-icon-badge">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <h3 class="step-title text-green">สมัครเข้าร่วมโครงการสำเร็จแล้ว!</h3>
+                            <p class="step-desc">วิสาหกิจชุมชนแปรรูปกาแฟ 456 ขอขอบพระคุณท่านที่ร่วมเป็นส่วนหนึ่งในโครงการ</p>
+                            
+                            <div class="member-card-success">
+                                <span class="card-label">รหัสสมาชิกประจำตัวคุณ</span>
+                                <h2 class="member-id-display" id="success-member-id">456-2026-0001</h2>
+                                <p class="card-note">ข้อมูลการจองของคุณได้รับการยืนยันและอัปโหลดลงใน Google Sheet เรียบร้อยแล้ว</p>
+                            </div>
+
+                            <div class="success-actions">
+                                <button type="button" class="btn btn-primary btn-large" id="btn-download-pdf">
+                                    <i class="fa-solid fa-file-pdf"></i> ดาวน์โหลดใบสำคัญ MOU (PDF)
+                                </button>
+                                <a href="https://lin.ee/zqNnvs6" target="_blank" class="btn btn-line btn-large">
+                                    <i class="fa-brands fa-line"></i> ติดต่อเจ้าหน้าที่ทาง LINE
+                                </a>
+                            </div>
+                            
+                            <div class="restart-link">
+                                <a href="javascript:void(0)" onclick="restartWizard()">ลงทะเบียนสมัครเพิ่มอีกครั้ง <i class="fa-solid fa-arrow-rotate-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Owner Metrics Dashboard -->
+    <section class="dashboard-section" id="dashboard">
+        <div class="container">
+            <div class="dashboard-wrapper">
+                <div class="dashboard-header-bar">
+                    <div class="header-left">
+                        <i class="fa-solid fa-chart-pie dashboard-logo-icon"></i>
+                        <div>
+                            <h2>DASHBOARD สำหรับเจ้าของโครงการ</h2>
+                            <p>ข้อมูลรายงานผลความคืบหน้าและการจองแบบ Real-time</p>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <span class="live-indicator"><span class="dot"></span> LIVE DATA (Simulated)</span>
+                    </div>
+                </div>
+
+                <!-- Metrics Grid -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span>สมาชิกเข้าร่วมทั้งหมด</span>
+                            <i class="fa-solid fa-users icon-metric"></i>
+                        </div>
+                        <h2 class="metric-value" id="dash-members">125 <small>คน</small></h2>
+                        <span class="metric-footer text-green"><i class="fa-solid fa-caret-up"></i> เพิ่มขึ้นต่อเนื่อง</span>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span>ต้นกาแฟที่จองสะสม</span>
+                            <i class="fa-solid fa-leaf icon-metric"></i>
+                        </div>
+                        <h2 class="metric-value" id="dash-trees">2,850 <small>ต้น</small></h2>
+                        <span class="metric-footer text-gold" id="dash-trees-percentage">62.5% จากเป้าหมายโครงการ</span>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span>มูลค่าโครงการรวม</span>
+                            <i class="fa-solid fa-wallet icon-metric"></i>
+                        </div>
+                        <h2 class="metric-value" id="dash-value">285,000 <small>บาท</small></h2>
+                        <span class="metric-footer">เฉลี่ย 22.8 ต้น ต่อคน</span>
+                    </div>
+                    <div class="metric-card highlight-metric">
+                        <div class="metric-header">
+                            <span>ยอดสมัครใหม่วันนี้</span>
+                            <i class="fa-solid fa-calendar-day icon-metric"></i>
+                        </div>
+                        <h2 class="metric-value" id="dash-today">15 <small>คน</small></h2>
+                        <span class="metric-footer text-light">อัปเดตล่าสุด 1 นาทีที่แล้ว</span>
+                    </div>
+                </div>
+
+                <!-- Dashboard Charts & Tables Grid -->
+                <div class="dashboard-details-grid">
+                    
+                    <!-- Graph column -->
+                    <div class="dash-block chart-block">
+                        <h3><i class="fa-solid fa-chart-line"></i> กราฟจำนวนผู้สมัครร่วมโครงการประจำเดือน</h3>
+                        <div class="chart-container-inner">
+                            <canvas id="monthly-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Supporters column -->
+                    <div class="dash-block list-block">
+                        <h3><i class="fa-solid fa-trophy text-gold"></i> Top 5 ผู้สนับสนุนยอดสูงสุด</h3>
+                        <ul class="supporters-list" id="supporters-list-container">
+                            <li class="supporter-item">
+                                <span class="rank first">1</span>
+                                <div class="supporter-info">
+                                    <strong>คุณสมชาย รักดี</strong>
+                                    <span>ผู้สนับสนุนกิตติมศักดิ์</span>
+                                </div>
+                                <span class="support-qty">200 ต้น</span>
+                            </li>
+                            <li class="supporter-item">
+                                <span class="rank second">2</span>
+                                <div class="supporter-info">
+                                    <strong>บริษัท ABC คอฟฟี่ จำกัด</strong>
+                                    <span>กลุ่มผู้ค้ากาแฟร่วมพัฒนา</span>
+                                </div>
+                                <span class="support-qty">150 ต้น</span>
+                            </li>
+                            <li class="supporter-item">
+                                <span class="rank third">3</span>
+                                <div class="supporter-info">
+                                    <strong>คุณวิไล มหานคร</strong>
+                                    <span>ผู้จองแปลงเกษตรสาธิต</span>
+                                </div>
+                                <span class="support-qty">100 ต้น</span>
+                            </li>
+                            <li class="supporter-item">
+                                <span class="rank">4</span>
+                                <div class="supporter-info">
+                                    <strong>คุณอนันต์ ตั้งใจ</strong>
+                                    <span>ผู้สนับสนุนแปลงปลูก 456</span>
+                                </div>
+                                <span class="support-qty">80 ต้น</span>
+                            </li>
+                            <li class="supporter-item">
+                                <span class="rank">5</span>
+                                <div class="supporter-info">
+                                    <strong>คุณกานต์ เจริญสุข</strong>
+                                    <span>ผู้สนับสนุนเกษตรกรรุ่นใหม่</span>
+                                </div>
+                                <span class="support-qty">50 ต้น</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Log Table / Google Sheet View -->
+                <div class="dash-block sheet-block">
+                    <div class="sheet-header">
+                        <h3><i class="fa-solid fa-table"></i> ตารางบันทึกข้อมูลเข้าระบบ Google Sheets (เรียลไทม์)</h3>
+                        <span class="sheet-path">Path: <code>Google Drive > 1ton1hope_2026.xlsx</code></span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="sheet-table">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Member ID</th>
+                                    <th>ชื่อ - นามสกุล</th>
+                                    <th>เบอร์โทรศัพท์</th>
+                                    <th>LINE ID</th>
+                                    <th>อีเมล</th>
+                                    <th>จำนวนจอง (ต้น)</th>
+                                    <th>ยอดรวม (บาท)</th>
+                                    <th>สถานะ PDF</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sheet-table-body">
+                                <!-- Pre-populated records from infographic simulation -->
+                                <tr>
+                                    <td>10/11/2025 10:30</td>
+                                    <td>456-2026-0001</td>
+                                    <td>คุณรุ่งทิวา แสนดี</td>
+                                    <td>081-XXXX-XXX</td>
+                                    <td>rung.line</td>
+                                    <td>rung@gmail.com</td>
+                                    <td>20</td>
+                                    <td>2,000</td>
+                                    <td><span class="badge badge-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span></td>
+                                </tr>
+                                <tr>
+                                    <td>10/11/2025 10:35</td>
+                                    <td>456-2026-0002</td>
+                                    <td>บริษัท คอฟฟี่เลิฟเวอร์ จำกัด</td>
+                                    <td>085-XXXX-XXX</td>
+                                    <td>coffeelove</td>
+                                    <td>contact@coffeelove.co.th</td>
+                                    <td>50</td>
+                                    <td>5,000</td>
+                                    <td><span class="badge badge-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span></td>
+                                </tr>
+                                <tr>
+                                    <td>10/11/2025 11:12</td>
+                                    <td>456-2026-0003</td>
+                                    <td>คุณพิมใจ แก้ววิเศษ</td>
+                                    <td>090-XXXX-XXX</td>
+                                    <td>pimjai.456</td>
+                                    <td>pimjai@gmail.com</td>
+                                    <td>10</td>
+                                    <td>1,000</td>
+                                    <td><span class="badge badge-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Area -->
+    <footer class="app-footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <img src="./logo 456 cafe_1.png" alt="456 Coffee Shop" class="footer-logo" onerror="this.src='https://placehold.co/80x80?text=456';">
+                <h3>วิสาหกิจชุมชนแปรรูปกาแฟ 456</h3>
+                <p class="tagline">“ปลูกวันนี้ เพื่ออนาคตที่ยั่งยืน”</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/profile.php?id=100086309856529" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="https://lin.ee/zqNnvs6" target="_blank" aria-label="Line"><i class="fa-brands fa-line"></i></a>
+                    <a href="mailto:456cafe.kalasin@gmail.com" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-contact">
+                <h4><i class="fa-solid fa-map-location-dot"></i> สถานที่ติดต่อ</h4>
+                <p>36 หมู่ 4 ตำบลกุดสิมคุ้มใหม่ อำเภอเขาวง จังหวัดกาฬสินธุ์ 46110</p>
+                <p><i class="fa-solid fa-phone"></i> เบอร์โทรศัพท์: <strong>098-565-2966</strong></p>
+                <p><i class="fa-solid fa-envelope"></i> อีเมลกลาง: <strong>456cafe.kalasin@gmail.com</strong></p>
+            </div>
+
+            <div class="footer-links">
+                <h4>สแกนติดต่อเจ้าหน้าที่</h4>
+                <div class="footer-qr-container">
+                    <img src="./dbarcodes_line.png" alt="LINE Official QR Code" class="footer-qr" onerror="this.src='https://placehold.co/100x100?text=LINE+QR';">
+                    <div class="qr-text">
+                        <strong>LINE: @456cafe</strong>
+                        <p>สแกนเพิ่มเพื่อนเพื่อติดต่อหรือสอบถามรายละเอียดโครงการเพิ่มเติม</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p>&copy; 2026 วิสาหกิจชุมชนแปรรูปกาแฟ 456. สงวนลิขสิทธิ์ทั้งหมด. พัฒนาขึ้นโดยความร่วมมือและเทคโนโลยีอัตโนมัติ</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
