@@ -43,6 +43,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initDashboardChart();
     setupPDFDownloadMock();
     fetchDashboardData();
+    
+    // Real-time synchronization: Poll the Google Sheets API every 20 seconds
+    setInterval(fetchDashboardData, 20000);
 });
 
 /* ==========================================================================
@@ -1444,47 +1447,76 @@ function updateDashboardDOM() {
 function populateLogTable(registrations) {
     const tableBody = document.getElementById('sheet-table-body');
     if (!tableBody) return;
-    tableBody.innerHTML = ''; // Clear existing
     
     // Sort registrations descending by date (newest first)
     const sorted = [...registrations].sort((a, b) => {
         return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
     });
     
+    let htmlContent = '';
     sorted.forEach(reg => {
-        const row = document.createElement('tr');
         const date = new Date(reg.timestamp);
         const dateStr = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
         
-        const maskedPhone = reg.phone.replace(/(\d{3})-(\d{3})-(\d{4})/, '$1-XXX-$3');
-        const maskedCitizen = reg.citizenid.replace(/(\d{3})\d{7}(\d{3})/, '$1XXXXXXX$2');
-        const maskedAddress = reg.address.length > 20 ? reg.address.substring(0, 18) + "..." : reg.address;
-        const maskedPlanting = reg.plantingarea.length > 20 ? reg.plantingarea.substring(0, 18) + "..." : reg.plantingarea;
+        const phone = reg.phone || '';
+        let maskedPhone = phone;
+        if (phone) {
+            if (phone.includes('-')) {
+                maskedPhone = phone.replace(/(\d{3})-(\d{3})-(\d{4})/, '$1-XXX-$3');
+            } else if (phone.length >= 10) {
+                maskedPhone = phone.substring(0, 3) + "-XXX-" + phone.substring(6);
+            }
+        }
         
-        row.innerHTML = `
-            <td>${dateStr}</td>
-            <td><strong>${reg.memberId}</strong></td>
-            <td>${reg.fullname}</td>
-            <td>${maskedCitizen}</td>
-            <td>${maskedPhone}</td>
-            <td>${reg.lineid}</td>
-            <td>${maskedAddress}</td>
-            <td>${reg.email}</td>
-            <td>${reg.seedlingType}</td>
-            <td>${reg.bookingMode}</td>
-            <td>${reg.qty}</td>
-            <td>${reg.total.toLocaleString()}</td>
-            <td>${maskedPlanting}</td>
-            <td><a href="${reg.pdfUrl}" target="_blank" class="badge badge-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</a></td>
+        const citizenid = reg.citizenid || '';
+        let maskedCitizen = citizenid;
+        if (citizenid) {
+            if (citizenid.length >= 13) {
+                maskedCitizen = citizenid.substring(0, 3) + "XXXXXXX" + citizenid.substring(10);
+            }
+        }
+        
+        const address = reg.address || '';
+        const maskedAddress = address.length > 20 ? address.substring(0, 18) + "..." : address;
+        
+        const plantingarea = reg.plantingarea || '';
+        const maskedPlanting = plantingarea.length > 20 ? plantingarea.substring(0, 18) + "..." : plantingarea;
+        
+        const memberId = reg.memberId || '';
+        const fullname = reg.fullname || '';
+        const lineid = reg.lineid || '';
+        const email = reg.email || '';
+        const seedlingType = reg.seedlingType || '';
+        const bookingMode = reg.bookingMode || '';
+        const qty = reg.qty || 0;
+        const total = reg.total || 0;
+        const pdfUrl = reg.pdfUrl || '#';
+        
+        htmlContent += `
+            <tr>
+                <td>${dateStr}</td>
+                <td><strong>${memberId}</strong></td>
+                <td>${fullname}</td>
+                <td>${maskedCitizen}</td>
+                <td>${maskedPhone}</td>
+                <td>${lineid}</td>
+                <td>${maskedAddress}</td>
+                <td>${email}</td>
+                <td>${seedlingType}</td>
+                <td>${bookingMode}</td>
+                <td>${qty}</td>
+                <td>${total.toLocaleString()}</td>
+                <td>${maskedPlanting}</td>
+                <td><a href="${pdfUrl}" target="_blank" class="badge badge-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</a></td>
+            </tr>
         `;
-        tableBody.appendChild(row);
     });
+    tableBody.innerHTML = htmlContent;
 }
 
 function rebuildTopSupporters(registrations) {
     const list = document.getElementById('supporters-list-container');
     if (!list) return;
-    list.innerHTML = '';
     
     // Aggregate by user name
     const agg = {};
@@ -1506,6 +1538,7 @@ function rebuildTopSupporters(registrations) {
     // Sort descending
     supporters.sort((a, b) => b.qty - a.qty);
     
+    let htmlContent = '';
     // Render top 5
     for (let i = 0; i < Math.min(supporters.length, 5); i++) {
         const s = supporters[i];
@@ -1514,18 +1547,18 @@ function rebuildTopSupporters(registrations) {
         else if (i === 1) rankClass = "rank second";
         else if (i === 2) rankClass = "rank third";
         
-        const li = document.createElement('li');
-        li.className = 'supporter-item';
-        li.innerHTML = `
-            <span class="${rankClass}">${i + 1}</span>
-            <div class="supporter-info">
-                <strong>${s.name}</strong>
-                <span>${s.subtext}</span>
-            </div>
-            <span class="support-qty">${s.qty} ต้น</span>
+        htmlContent += `
+            <li class="supporter-item">
+                <span class="${rankClass}">${i + 1}</span>
+                <div class="supporter-info">
+                    <strong>${s.name}</strong>
+                    <span>${s.subtext}</span>
+                </div>
+                <span class="support-qty">${s.qty} ต้น</span>
+            </li>
         `;
-        list.appendChild(li);
     }
+    list.innerHTML = htmlContent;
 }
 
 function rebuildChart(registrations) {
