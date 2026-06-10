@@ -937,11 +937,32 @@ function drawCanvasContent(ctx, canvas, loadedImages, callback) {
     // Draw Address (supporting wrapping if long)
     const rawAddress = registrationData.address;
     if (ctx.measureText(rawAddress).width > 350) {
-        const mid = Math.floor(rawAddress.length / 2);
-        const line1 = rawAddress.substring(0, mid);
-        const line2 = rawAddress.substring(mid);
+        // Find a good place to split (e.g. before "อ." or "ต." or "จ.")
+        let splitIdx = -1;
+        const splitKeywords = [" อ.", " จ.", " ต.", " อำเภอ", " จังหวัด", " ตำบล", "อ.", "จ.", "ต.", "อำเภอ", "จังหวัด", "ตำบล"];
+        for (let kw of splitKeywords) {
+            const idx = rawAddress.indexOf(kw);
+            if (idx > 15 && idx < 35) {
+                splitIdx = idx;
+                break;
+            }
+        }
+        if (splitIdx === -1) {
+            splitIdx = Math.floor(rawAddress.length / 2);
+        }
+        const line1 = rawAddress.substring(0, splitIdx).trim();
+        const line2 = rawAddress.substring(splitIdx).trim();
+        
         drawTextLineWithDots(ctx, 'ที่อยู่', line1, leftColX, 620, leftColW);
-        drawTextLineWithDots(ctx, '', line2, leftColX, 660, leftColW);
+        
+        // Draw line 2 without dots, perfectly aligned with line 1 value
+        ctx.save();
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#2c211a';
+        ctx.font = 'bold 16px Prompt, sans-serif';
+        const labelWidth = ctx.measureText('ที่อยู่').width;
+        ctx.fillText(line2, leftColX + labelWidth + 10, 660);
+        ctx.restore();
     } else {
         drawTextLineWithDots(ctx, 'ที่อยู่', rawAddress, leftColX, 620, leftColW);
     }
@@ -1001,59 +1022,64 @@ function drawCanvasContent(ctx, canvas, loadedImages, callback) {
     ctx.fillText('ข้อตกลง', 600, 834);
 
     // Left half agreement items 1-3
-    ctx.textAlign = 'left';
     ctx.fillStyle = '#3d271d';
     
     // Item 1
     drawNumberBadge(ctx, 1, 60, 880);
+    ctx.textAlign = 'left';
     ctx.font = 'bold 13px Prompt, sans-serif';
     ctx.fillText('วิสาหกิจชุมชนแปรรูปกาแฟ 456 จะดำเนินการปลูก ดูแล', 100, 890);
     ctx.font = '13px Prompt, sans-serif';
     ctx.fillText('และบำรุงรักษาต้นกาแฟตามหลักวิชาการเกษตรอย่างเหมาะสม', 100, 910);
-
+ 
     // Item 2
     drawNumberBadge(ctx, 2, 60, 935);
+    ctx.textAlign = 'left';
     ctx.font = 'bold 13px Prompt, sans-serif';
     ctx.fillText('ผู้จองรับทราบว่าการเจริญเติบโตและผลผลิตอาจเปลี่ยนแปลง', 100, 945);
     ctx.font = '13px Prompt, sans-serif';
     ctx.fillText('ได้ตามสภาพอากาศ โรคพืช หรือเหตุสุดวิสัยซึ่งอยู่นอกเหนือการควบคุม', 100, 965);
-
+ 
     // Item 3
     drawNumberBadge(ctx, 3, 60, 990);
+    ctx.textAlign = 'left';
     ctx.font = 'bold 13px Prompt, sans-serif';
     ctx.fillText('ผู้จองมีสิทธิรับข้อมูลการเติบโตของต้นกาแฟเป็นระยะ', 100, 1000);
     ctx.font = '13px Prompt, sans-serif';
     ctx.fillText('และได้รับผลประโยชน์ตามเงื่อนไขของโครงการ ดังนี้:', 100, 1020);
-
+ 
     // Draw 4 icon labels
     drawIconFeature(ctx, '📋', 'ใบรับรอง', 70, 1050);
     drawIconFeature(ctx, '🏷️', 'ป้ายชื่อ', 190, 1050);
     drawIconFeature(ctx, '📊', 'รายงานผล', 310, 1050);
     drawIconFeature(ctx, '☕', 'กาแฟคั่วพิเศษ', 430, 1050);
-
+ 
     // Right half agreement items 4-5
     // Item 4
     drawNumberBadge(ctx, 4, 640, 880);
+    ctx.textAlign = 'left';
     ctx.font = 'bold 13px Prompt, sans-serif';
     ctx.fillText('ระยะเวลาโครงการ: 4 ปี นับจากวันเริ่มดำเนินการปลูก', 680, 895);
-
+ 
     // Item 5
     drawNumberBadge(ctx, 5, 640, 925);
+    ctx.textAlign = 'left';
     ctx.font = 'bold 13px Prompt, sans-serif';
     ctx.fillText('บันทึกข้อตกลงฉบับนี้จัดทำขึ้นด้วยความสมัครใจ', 680, 935);
     ctx.font = '13px Prompt, sans-serif';
     ctx.fillText('เพื่อร่วมสร้างผืนป่ากาแฟ สร้างอาชีพ และพัฒนาเศรษฐกิจฐานราก', 680, 955);
-
+ 
     // Benefits box
     ctx.fillStyle = '#faf0e0';
     ctx.strokeStyle = '#c5a880';
     ctx.lineWidth = 1;
     drawRoundedRect(ctx, 640, 980, 500, 140, 8, true, true);
-    
+     
     ctx.fillStyle = '#3d271d';
+    ctx.textAlign = 'left';
     ctx.font = 'bold 13px Prompt, sans-serif';
     ctx.fillText('🎁 ผลประโยชน์สำหรับผู้จอง (เมื่อผลผลิตพร้อมเก็บเกี่ยว)', 660, 1008);
-    
+     
     ctx.font = '12px Prompt, sans-serif';
     ctx.fillText('✓  ได้รับผลผลิตกาแฟคั่วคุณภาพ 1 กิโลกรัม / การจองทุก 10 ต้น ต่อปี', 660, 1035);
     ctx.fillText('✓  ได้รับส่วนลดพิเศษสำหรับผลิตภัณฑ์ 456 Coffee ตลอดชีพ', 660, 1060);
@@ -1094,17 +1120,7 @@ function drawCanvasContent(ctx, canvas, loadedImages, callback) {
     ctx.fillText(`( ${registrationData.fullname} )`, 260, 1345);
     ctx.fillStyle = '#7d6e65';
     ctx.font = '12px Prompt, sans-serif';
-    ctx.fillText(`วันที่สมัคร: ${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear() + 543}`, 260, 1370);
-
-    // Mock signature for Member
-    ctx.strokeStyle = '#0000ff';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.arc(260, 1295, 20, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.font = 'italic 16px Courier, sans-serif';
-    ctx.fillStyle = '#0000ff';
-    ctx.fillText(registrationData.fullname.split(' ')[0], 260, 1300);
+    ctx.fillText(`วันที่ ${now.getDate()} / ${now.getMonth() + 1} / ${now.getFullYear() + 543}`, 260, 1395);
 
     // Center image: Branch of Coffee Cherries (mock drawn path)
     drawCoffeeBranch(ctx, 600, 1300);
@@ -1124,18 +1140,9 @@ function drawCanvasContent(ctx, canvas, loadedImages, callback) {
     ctx.fillStyle = '#7d6e65';
     ctx.font = '12px Prompt, sans-serif';
     ctx.fillText('ตำแหน่ง: ประธานวิสาหกิจชุมชนแปรรูปกาแฟ 456', 910, 1370);
+    ctx.fillText(`วันที่ ${now.getDate()} / ${now.getMonth() + 1} / ${now.getFullYear() + 543}`, 910, 1395);
 
-    // Mock signature for President
-    ctx.strokeStyle = '#053f1d';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.arc(910, 1295, 18, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.font = 'italic 16px Courier, sans-serif';
-    ctx.fillStyle = '#053f1d';
-    ctx.fillText('Pattana', 910, 1300);
-
-    // Red Stamp Seal over President signature
+    // Red Stamp Seal over President signature area
     ctx.beginPath();
     ctx.arc(960, 1330, 40, 0, Math.PI * 2);
     ctx.strokeStyle = 'rgba(220, 53, 69, 0.4)';
@@ -1178,6 +1185,7 @@ function drawCanvasContent(ctx, canvas, loadedImages, callback) {
 }
 
 function drawRoundedRect(ctx, x, y, width, height, radius, fill, stroke) {
+    ctx.save();
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
     ctx.lineTo(x + width - radius, y);
@@ -1191,9 +1199,11 @@ function drawRoundedRect(ctx, x, y, width, height, radius, fill, stroke) {
     ctx.closePath();
     if (fill) ctx.fill();
     if (stroke) ctx.stroke();
+    ctx.restore();
 }
 
 function drawNumberBadge(ctx, num, x, y) {
+    ctx.save();
     ctx.fillStyle = '#c5a880';
     ctx.beginPath();
     ctx.arc(x + 14, y + 14, 14, 0, Math.PI * 2);
@@ -1202,9 +1212,11 @@ function drawNumberBadge(ctx, num, x, y) {
     ctx.font = 'bold 12px Prompt, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(num, x + 14, y + 18);
+    ctx.restore();
 }
 
 function drawIconFeature(ctx, emoji, label, x, y) {
+    ctx.save();
     ctx.fillStyle = '#fdfbf7';
     ctx.strokeStyle = 'rgba(61, 39, 29, 0.08)';
     ctx.lineWidth = 1;
@@ -1218,9 +1230,11 @@ function drawIconFeature(ctx, emoji, label, x, y) {
     ctx.font = 'bold 10px Prompt, sans-serif';
     ctx.fillStyle = '#7d6e65';
     ctx.fillText(label, x + 50, y + 50);
+    ctx.restore();
 }
 
 function drawCoffeeBranch(ctx, x, y) {
+    ctx.save();
     ctx.strokeStyle = '#5c4033'; // branch color
     ctx.lineWidth = 4;
     ctx.beginPath();
@@ -1244,9 +1258,11 @@ function drawCoffeeBranch(ctx, x, y) {
     ctx.arc(x, y + 8, 6, 0, Math.PI * 2);
     ctx.arc(x + 6, y + 2, 5, 0, Math.PI * 2);
     ctx.fill();
+    ctx.restore();
 }
 
 function drawTextLineWithDots(ctx, label, val, x, y, w, dotColor='#c5a880', labelColor='#7d6e65', valColor='#2c211a') {
+    ctx.save();
     ctx.textAlign = 'left';
     ctx.font = '16px Prompt, sans-serif';
     
@@ -1268,6 +1284,7 @@ function drawTextLineWithDots(ctx, label, val, x, y, w, dotColor='#c5a880', labe
     ctx.fillStyle = valColor;
     ctx.font = 'bold 16px Prompt, sans-serif';
     ctx.fillText(val || "", x + labelWidth + 10, y - 2);
+    ctx.restore();
 }
 
 function thaiBahtText(num) {
