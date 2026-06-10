@@ -90,7 +90,7 @@
             
             <div class="hero-image-area">
                 <div class="hero-glass-card">
-                    <img src="./project 456.png" alt="1 ต้น 1 ความหวัง Infographic" class="hero-infographic" onerror="this.src='https://placehold.co/600x400/3E2723/FFFFFF?text=1+ต้น+1+ความหวัง';">
+                    <img src="./im9y0254.png" alt="456 Café Family Photo" class="hero-infographic hero-family-photo" onerror="this.src='https://placehold.co/600x800/3E2723/FFFFFF?text=456+Café+Family';">
                     <div class="quote-card">
                         <i class="fa-solid fa-quote-left quote-icon"></i>
                         <p class="quote-text">ปลูกวันนี้ เพื่ออนาคตที่ยั่งยืน</p>
@@ -138,57 +138,86 @@
             <div class="benefits-container-glass">
                 <div class="benefits-text-side">
                     <div class="badge-accent">EXCLUSIVE PRIVILEGES</div>
-                    <h2>สิทธิประโยชน์สำหรับสมาชิก</h2>
-                    <p>ทุกๆ การจองต้นกาแฟ "1 ต้น 1 ความหวัง" คุณจะได้รับเอกสารสิทธิ์และสิทธิพิเศษจากวิสาหกิจชุมชนแปรรูปกาแฟ 456 ดังนี้</p>
+                    <h2>สิทธิประโยชน์และระดับสมาชิก</h2>
+                    <p>ทุกๆ การจองต้นกาแฟ "1 ต้น 1 ความหวัง" คุณจะได้รับเอกสารสิทธิ์พร้อมระดับสมาชิกและสิทธิพิเศษจากวิสาหกิจชุมชนแปรรูปกาแฟ 456 โดยสามารถเลือกดูรายละเอียดและประเภทบัตรได้ตามแท็บด้านล่างนี้</p>
                     
-                    <ul class="benefits-list">
-                        <li>
-                            <span class="benefit-number">1</span>
-                            <div class="benefit-desc">
-                                <strong>ใบรับรองสมาชิก (MOU Certificate)</strong>
-                                <p>เอกสารรับรองสิทธิ์การร่วมสนับสนุนโครงการอย่างเป็นทางการ</p>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="benefit-number">2</span>
-                            <div class="benefit-desc">
-                                <strong>ป้ายชื่อติดในแปลงปลูกจริง</strong>
-                                <p>ติดป้ายชื่อของคุณบนต้นกาแฟที่คุณเป็นผู้สนับสนุนในพื้นที่แปลงสาธิต</p>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="benefit-number">3</span>
-                            <div class="benefit-desc">
-                                <strong>รายงานการเจริญเติบโตประจำปี</strong>
-                                <p>ภาพถ่ายและข้อมูลอัปเดตการดูแลเติบโตของต้นกาแฟส่งตรงถึงคุณ</p>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="benefit-number">4</span>
-                            <div class="benefit-desc">
-                                <strong>ส่วนลดพิเศษผลิตภัณฑ์ 456 Coffee</strong>
-                                <p>ส่วนลดพิเศษสำหรับเมล็ดกาแฟและเครื่องดื่มแบรนด์ 456 Coffee</p>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="benefit-number">5</span>
-                            <div class="benefit-desc">
-                                <strong>สิทธิร่วมกิจกรรมวิสาหกิจชุมชน</strong>
-                                <p>เชิญร่วมกิจกรรมเก็บเกี่ยวผลผลิตและเวิร์กชอปคั่วกาแฟประจำปี</p>
-                            </div>
-                        </li>
-                        <li>
-                            <span class="benefit-number">6</span>
-                            <div class="benefit-desc">
-                                <strong>สิทธิ์ซื้อกาแฟรุ่นพิเศษ (Micro-lot)</strong>
-                                <p>สิทธิ์ในการจองกาแฟคัดพิเศษเฉพาะฤดูกาลก่อนใคร</p>
-                            </div>
-                        </li>
-                    </ul>
+                    <!-- Tab Buttons -->
+                    <div class="benefits-tabs">
+                        <button type="button" class="tab-btn active" onclick="switchBenefitTab('privileges')">
+                            <i class="fa-solid fa-id-card"></i> บัตรสมาชิก & สิทธิพิเศษ
+                        </button>
+                        <button type="button" class="tab-btn" onclick="switchBenefitTab('levels')">
+                            <i class="fa-solid fa-crown"></i> ระดับสมาชิก Green & Gold
+                        </button>
+                    </div>
+
+                    <!-- Tab 1: Member Card Privileges -->
+                    <div class="benefit-tab-content active-tab-content" id="tab-content-privileges">
+                        <ul class="benefits-list">
+                            <li>
+                                <span class="benefit-number">1</span>
+                                <div class="benefit-desc">
+                                    <strong>สิทธิประโยชน์สะสมแต้มแลกรับรางวัล</strong>
+                                    <p>ทุกการใช้จ่ายที่ร้าน 456 Coffee สามารถสะสมคะแนนเพื่อแลกรับเครื่องดื่มฟรีหรือของรางวัลพิเศษจากชุมชน</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="benefit-number">2</span>
+                                <div class="benefit-desc">
+                                    <strong>ส่วนลดผลิตภัณฑ์เมล็ดกาแฟและเครื่องดื่ม</strong>
+                                    <p>รับสิทธิ์ซื้อสินค้าในราคาพิเศษ ส่วนลดสำหรับเมนูกาแฟคั่วและเครื่องดื่มทุกประเภทในเครือวิสาหกิจชุมชน</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="benefit-number">3</span>
+                                <div class="benefit-desc">
+                                    <strong>สิทธิ์รับบริการพิเศษในวันเกิด</strong>
+                                    <p>เฉลิมฉลองวันเกิดของคุณด้วยเครื่องดื่มฟรีสุดพิเศษ 1 แก้ว และส่วนลดพิเศษสูงสุดถึง 20% สำหรับครอบครัว</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Tab 2: Membership Levels -->
+                    <div class="benefit-tab-content" id="tab-content-levels">
+                        <ul class="benefits-list">
+                            <li>
+                                <span class="benefit-number">G</span>
+                                <div class="benefit-desc">
+                                    <strong>Green Member (สมัครฟรีไม่มีค่าใช้จ่าย)</strong>
+                                    <p>สะสมแต้ม 1 บาท = 1 แต้ม แลกรับเครื่องดื่มฟรี และรับสิทธิพิเศษเครื่องดื่มฟรีในวันเกิดของคุณ</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="benefit-number">GL</span>
+                                <div class="benefit-desc">
+                                    <strong>Gold Member (สมัครเพียง 299 บาท)</strong>
+                                    <p>สะสมแต้มคูณสอง 1 บาท = 2 แต้ม, รับส่วนลดทันที 10% ทุกเมนู, เครื่องดื่มฟรี 1 แก้วเมื่อสมัคร และรับส่วนลดวันเกิด 20%</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="benefit-number">S</span>
+                                <div class="benefit-desc">
+                                    <strong>ขั้นตอนการสะสมคะแนนแสนง่าย</strong>
+                                    <p>เพียงแสดงบัตรสมาชิกก่อนชำระเงิน > ระบบลงแต้มให้อัตโนมัติ > นำคะแนนสะสมมาแลกสิทธิพิเศษตามระดับบัตรได้เลย</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 
                 <div class="benefits-visual-side">
-                    <img src="./infor mou 456.png" alt="โครงการ 1 ต้น 1 ความหวัง รายละเอียด" class="benefits-infographic" onerror="this.src='https://placehold.co/400x500/2E1C0C/FFFFFF?text=สิทธิประโยชน์';">
+                    <!-- Image Showcase Containers -->
+                    <div class="infographic-showcase-container">
+                        <!-- Image for Tab 1 -->
+                        <div class="infographic-wrapper active-img" id="img-privileges">
+                            <img src="./34524423.png" alt="สิทธิพิเศษบัตรสมาชิก 456 Cafe" class="benefits-infographic new-benefit-img" onerror="this.src='https://placehold.co/500x600/1F140E/FFFFFF?text=Privileges';">
+                        </div>
+                        <!-- Image for Tab 2 -->
+                        <div class="infographic-wrapper" id="img-levels">
+                            <img src="./765474576.png" alt="ระดับสมาชิก Green & Gold 456 Cafe" class="benefits-infographic new-benefit-img" onerror="this.src='https://placehold.co/500x400/1F140E/FFFFFF?text=Tiers';">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

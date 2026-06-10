@@ -808,3 +808,34 @@ function getThaiMonthName(idx) {
     ];
     return months[idx];
 }
+
+/* ==========================================================================
+   TAB SWITCHER FOR BENEFITS SECTION
+   ========================================================================== */
+function switchBenefitTab(tabName) {
+    // 1. Update tab button classes
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    tabBtns.forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Add active class to clicked button
+    const activeBtn = Array.from(tabBtns).find(btn => btn.getAttribute('onclick').includes(tabName));
+    if (activeBtn) activeBtn.classList.add('active');
+    
+    // 2. Update text content
+    const contents = document.querySelectorAll('.benefit-tab-content');
+    contents.forEach(c => {
+        c.classList.remove('active-tab-content');
+    });
+    const targetContent = document.getElementById(`tab-content-${tabName}`);
+    if (targetContent) targetContent.classList.add('active-tab-content');
+    
+    // 3. Update active visual images
+    const imgWrappers = document.querySelectorAll('.infographic-wrapper');
+    imgWrappers.forEach(w => {
+        w.classList.remove('active-img');
+    });
+    const targetImg = document.getElementById(`img-${tabName}`);
+    if (targetImg) targetImg.classList.add('active-img');
+}

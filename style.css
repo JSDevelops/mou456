@@ -1623,6 +1623,99 @@ img {
 }
 
 /* ==========================================================================
+   IMAGE SHOWCASE & TABS (NEW)
+   ========================================================================== */
+.hero-family-photo {
+    max-height: 480px;
+    object-fit: cover;
+    border-radius: var(--border-radius-md);
+    border: 3px solid var(--color-accent-gold);
+    box-shadow: var(--box-shadow-gold);
+}
+
+.benefits-tabs {
+    display: flex;
+    gap: 12px;
+    margin: 20px 0 30px;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    background-color: rgba(61, 39, 29, 0.05);
+    border: 1px solid rgba(61, 39, 29, 0.1);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition-smooth);
+}
+
+.tab-btn:hover {
+    background-color: rgba(197, 168, 128, 0.15);
+    color: var(--color-primary-dark);
+}
+
+.tab-btn.active {
+    background-color: var(--color-primary-medium);
+    color: var(--color-bg-white);
+    border-color: var(--color-primary-medium);
+    box-shadow: var(--box-shadow-soft);
+}
+
+.benefit-tab-content {
+    display: none;
+}
+
+.benefit-tab-content.active-tab-content {
+    display: block;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+.infographic-showcase-container {
+    position: relative;
+    width: 100%;
+    min-height: 440px;
+    background-color: #120905; /* Deep coffee color matching infographics */
+    border-radius: var(--border-radius-lg);
+    border: 3px solid var(--color-accent-gold);
+    padding: 12px;
+    box-shadow: var(--box-shadow-medium);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.infographic-wrapper {
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+.infographic-wrapper.active-img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+.new-benefit-img {
+    width: 100%;
+    max-height: 480px;
+    object-fit: contain; /* ensures text inside is not cropped */
+    border-radius: var(--border-radius-sm);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
    RESPONSIVE LAYOUT MEDIA QUERIES
    ========================================================================== */
 @media (max-width: 1024px) {
