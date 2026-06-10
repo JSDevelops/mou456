@@ -81,11 +81,11 @@
                         <span class="target-number">4,560 <small>ต้น</small></span>
                     </div>
                     <div class="progress-bar-container">
-                        <div class="progress-bar-fill" id="target-progress" style="width: 62.5%;"></div>
+                        <div class="progress-bar-fill" id="target-progress" style="width: 0%;"></div>
                     </div>
                     <div class="progress-stats">
-                        <span>จองแล้ว 2,850 ต้น (62.5%)</span>
-                        <span>คงเหลือ 1,710 ต้น</span>
+                        <span>จองแล้ว 0 ต้น (0%)</span>
+                        <span>คงเหลือ 4,560 ต้น</span>
                     </div>
                 </div>
 
@@ -700,32 +700,32 @@
                             <span>สมาชิกเข้าร่วมทั้งหมด</span>
                             <i class="fa-solid fa-users icon-metric"></i>
                         </div>
-                        <h2 class="metric-value" id="dash-members">125 <small>คน</small></h2>
+                        <h2 class="metric-value" id="dash-members">0 <small>คน</small></h2>
                         <span class="metric-footer text-green"><i class="fa-solid fa-caret-up"></i>
-                            เพิ่มขึ้นต่อเนื่อง</span>
+                            รอข้อมูลผู้สมัคร</span>
                     </div>
                     <div class="metric-card">
                         <div class="metric-header">
                             <span>ต้นกาแฟที่จองสะสม</span>
                             <i class="fa-solid fa-leaf icon-metric"></i>
                         </div>
-                        <h2 class="metric-value" id="dash-trees">2,850 <small>ต้น</small></h2>
-                        <span class="metric-footer text-gold" id="dash-trees-percentage">62.5% จากเป้าหมายโครงการ</span>
+                        <h2 class="metric-value" id="dash-trees">0 <small>ต้น</small></h2>
+                        <span class="metric-footer text-gold" id="dash-trees-percentage">0% จากเป้าหมายโครงการ</span>
                     </div>
                     <div class="metric-card">
                         <div class="metric-header">
                             <span>มูลค่าโครงการรวม</span>
                             <i class="fa-solid fa-wallet icon-metric"></i>
                         </div>
-                        <h2 class="metric-value" id="dash-value">285,000 <small>บาท</small></h2>
-                        <span class="metric-footer">เฉลี่ย 22.8 ต้น ต่อคน</span>
+                        <h2 class="metric-value" id="dash-value">0 <small>บาท</small></h2>
+                        <span class="metric-footer">เฉลี่ย 0 ต้น ต่อคน</span>
                     </div>
                     <div class="metric-card highlight-metric">
                         <div class="metric-header">
                             <span>ยอดสมัครใหม่วันนี้</span>
                             <i class="fa-solid fa-calendar-day icon-metric"></i>
                         </div>
-                        <h2 class="metric-value" id="dash-today">15 <small>คน</small></h2>
+                        <h2 class="metric-value" id="dash-today">0 <small>คน</small></h2>
                         <span class="metric-footer text-light">อัปเดตล่าสุด 1 นาทีที่แล้ว</span>
                     </div>
                 </div>
@@ -745,46 +745,7 @@
                     <div class="dash-block list-block">
                         <h3><i class="fa-solid fa-trophy text-gold"></i> Top 5 ผู้สนับสนุนยอดสูงสุด</h3>
                         <ul class="supporters-list" id="supporters-list-container">
-                            <li class="supporter-item">
-                                <span class="rank first">1</span>
-                                <div class="supporter-info">
-                                    <strong>คุณสมชาย รักดี</strong>
-                                    <span>ผู้สนับสนุนกิตติมศักดิ์</span>
-                                </div>
-                                <span class="support-qty">200 ต้น</span>
-                            </li>
-                            <li class="supporter-item">
-                                <span class="rank second">2</span>
-                                <div class="supporter-info">
-                                    <strong>บริษัท ABC คอฟฟี่ จำกัด</strong>
-                                    <span>กลุ่มผู้ค้ากาแฟร่วมพัฒนา</span>
-                                </div>
-                                <span class="support-qty">150 ต้น</span>
-                            </li>
-                            <li class="supporter-item">
-                                <span class="rank third">3</span>
-                                <div class="supporter-info">
-                                    <strong>คุณวิไล มหานคร</strong>
-                                    <span>ผู้จองแปลงเกษตรสาธิต</span>
-                                </div>
-                                <span class="support-qty">100 ต้น</span>
-                            </li>
-                            <li class="supporter-item">
-                                <span class="rank">4</span>
-                                <div class="supporter-info">
-                                    <strong>คุณอนันต์ ตั้งใจ</strong>
-                                    <span>ผู้สนับสนุนแปลงปลูก 456</span>
-                                </div>
-                                <span class="support-qty">80 ต้น</span>
-                            </li>
-                            <li class="supporter-item">
-                                <span class="rank">5</span>
-                                <div class="supporter-info">
-                                    <strong>คุณกานต์ เจริญสุข</strong>
-                                    <span>ผู้สนับสนุนเกษตรกรรุ่นใหม่</span>
-                                </div>
-                                <span class="support-qty">50 ต้น</span>
-                            </li>
+                            <!-- รายชื่อผู้สนับสนุนจะแสดงผลที่นี่โดยอัตโนมัติเมื่อมีการจอง -->
                         </ul>
                     </div>
                 </div>
@@ -816,58 +777,7 @@
                                 </tr>
                             </thead>
                             <tbody id="sheet-table-body">
-                                <!-- Pre-populated records from infographic simulation -->
-                                <tr>
-                                    <td>10/11/2025 10:30</td>
-                                    <td>456-2026-0001</td>
-                                    <td>คุณรุ่งทิวา แสนดี</td>
-                                    <td>120XXXXXXXXXX</td>
-                                    <td>081-XXXX-XXX</td>
-                                    <td>rung.line</td>
-                                    <td>อ.เมือง จ.กาฬสินธุ์</td>
-                                    <td>rung@gmail.com</td>
-                                    <td>1-2 เดือน</td>
-                                    <td>ต้น</td>
-                                    <td>20</td>
-                                    <td>1,000</td>
-                                    <td>แปลงสาธิต อ.เขาวง จ.กาฬสินธุ์</td>
-                                    <td><span class="badge badge-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>10/11/2025 10:35</td>
-                                    <td>456-2026-0002</td>
-                                    <td>บริษัท คอฟฟี่เลิฟเวอร์ จำกัด</td>
-                                    <td>010XXXXXXXXXX</td>
-                                    <td>085-XXXX-XXX</td>
-                                    <td>coffeelove</td>
-                                    <td>กรุงเทพมหานคร</td>
-                                    <td>contact@coffeelove.co.th</td>
-                                    <td>1 ปี</td>
-                                    <td>ต้น</td>
-                                    <td>50</td>
-                                    <td>5,000</td>
-                                    <td>แปลงจอง อ.นาคู จ.กาฬสินธุ์</td>
-                                    <td><span class="badge badge-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>10/11/2025 11:12</td>
-                                    <td>456-2026-0003</td>
-                                    <td>คุณพิมใจ แก้ววิเศษ</td>
-                                    <td>340XXXXXXXXXX</td>
-                                    <td>090-XXXX-XXX</td>
-                                    <td>pimjai.456</td>
-                                    <td>อ.กมลาไสย จ.กาฬสินธุ์</td>
-                                    <td>pimjai@gmail.com</td>
-                                    <td>1-2 เดือน</td>
-                                    <td>ต้น</td>
-                                    <td>10</td>
-                                    <td>500</td>
-                                    <td>แปลงสมาชิก อ.เขาวง จ.กาฬสินธุ์</td>
-                                    <td><span class="badge badge-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span>
-                                    </td>
-                                </tr>
+                                <!-- Records will be appended here dynamically upon real registration -->
                             </tbody>
                         </table>
                     </div>

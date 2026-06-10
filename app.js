@@ -11,11 +11,11 @@
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyH2gFNE-kZtFzautfGAT_V9DzLTvBF5naRAVABShzljBVVTXdNZBIzmLeqvc4TQdD_NA/exec";
 
 // Global variables for dashboard state
-let totalMembers = 125;
-let totalTrees = 2850;
-let totalValue = 285000;
-let todayRegistrations = 15;
-let nextMemberIndex = 126;
+let totalMembers = 0;
+let totalTrees = 0;
+let totalValue = 0;
+let todayRegistrations = 0;
+let nextMemberIndex = 1;
 
 // Form values cache
 let registrationData = {
@@ -670,7 +670,7 @@ function initDashboardChart() {
         labels: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.'],
         datasets: [{
             label: 'ผู้เข้าร่วม (คน)',
-            data: [5, 12, 25, 48, 70, 95, totalMembers], // Updates with new member
+            data: [0, 0, 0, 0, 0, 0, totalMembers], // Updates with new member
             fill: true,
             backgroundColor: 'rgba(197, 168, 128, 0.15)',
             borderColor: '#c5a880',
