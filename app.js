@@ -1504,17 +1504,11 @@ function populateLogTable(registrations) {
                 <td>${dateStr}</td>
                 <td><strong>${memberId}</strong></td>
                 <td>${fullname}</td>
-                <td>${maskedCitizen}</td>
-                <td>${maskedPhone}</td>
-                <td>${lineid}</td>
                 <td>${maskedAddress}</td>
-                <td>${email}</td>
                 <td>${seedlingType}</td>
                 <td>${bookingMode}</td>
                 <td>${qty}</td>
-                <td>${total.toLocaleString()}</td>
                 <td>${maskedPlanting}</td>
-                <td><a href="${pdfUrl}" target="_blank" class="badge badge-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</a></td>
             </tr>
         `;
     });
