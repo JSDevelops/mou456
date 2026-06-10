@@ -171,8 +171,7 @@ function doPost(e) {
       pdfUrl: pdfUrl,
       emailSent: emailSent
     }))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeaders(headers);
+    .setMimeType(ContentService.MimeType.JSON);
     
   } catch (error) {
     // ส่งข้อความแจ้งข้อผิดพลาดกลับไป
@@ -180,21 +179,13 @@ function doPost(e) {
       status: "error",
       message: error.toString()
     }))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeaders(headers);
+    .setMimeType(ContentService.MimeType.JSON);
   }
 }
 
-// รองรับคำขอ OPTIONS สำหรับ CORS Preflight
 function doOptions(e) {
-  var headers = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type"
-  };
   return ContentService.createTextOutput("")
-    .setMimeType(ContentService.MimeType.TEXT)
-    .setHeaders(headers);
+    .setMimeType(ContentService.MimeType.TEXT);
 }
 
 // รองรับคำขอ GET สำหรับดึงข้อมูลไปแสดงผลบน Dashboard
@@ -280,15 +271,13 @@ function doGet(e) {
       todayRegistrations: todayRegistrations,
       registrations: registrations
     }))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeaders(headers);
+    .setMimeType(ContentService.MimeType.JSON);
     
   } catch (error) {
     return ContentService.createTextOutput(JSON.stringify({
       status: "error",
       message: error.toString()
     }))
-    .setMimeType(ContentService.MimeType.JSON)
-    .setHeaders(headers);
+    .setMimeType(ContentService.MimeType.JSON);
   }
 }
