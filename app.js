@@ -1391,23 +1391,23 @@ function fetchDashboardData() {
         .then(res => res.json())
         .then(data => {
             if (data.status === "success") {
-                totalMembers = data.totalMembers;
-                totalTrees = data.totalTrees;
-                totalValue = data.totalValue;
-                todayRegistrations = data.todayRegistrations;
+                totalMembers = Number(data.totalMembers) || 0;
+                totalTrees = Number(data.totalTrees) || 0;
+                totalValue = Number(data.totalValue) || 0;
+                todayRegistrations = Number(data.todayRegistrations) || 0;
                 nextMemberIndex = totalMembers + 1;
                 
                 // Update Dashboard DOM metrics
                 updateDashboardDOM();
                 
                 // Populate log table
-                populateLogTable(data.registrations);
+                populateLogTable(data.registrations || []);
                 
                 // Recalculate top supporters
-                rebuildTopSupporters(data.registrations);
+                rebuildTopSupporters(data.registrations || []);
                 
                 // Recalculate and update chart
-                rebuildChart(data.registrations);
+                rebuildChart(data.registrations || []);
             }
         })
         .catch(err => {
@@ -1450,15 +1450,22 @@ function populateLogTable(registrations) {
     
     // Sort registrations descending by date (newest first)
     const sorted = [...registrations].sort((a, b) => {
-        return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+        const timeA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+        const timeB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+        return timeB - timeA;
     });
     
     let htmlContent = '';
     sorted.forEach(reg => {
-        const date = new Date(reg.timestamp);
-        const dateStr = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+        let dateStr = '-';
+        if (reg.timestamp) {
+            const date = new Date(reg.timestamp);
+            if (!isNaN(date.getTime())) {
+                dateStr = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+            }
+        }
         
-        const phone = reg.phone || '';
+        const phone = reg.phone !== undefined && reg.phone !== null ? String(reg.phone).trim() : '';
         let maskedPhone = phone;
         if (phone) {
             if (phone.includes('-')) {
@@ -1468,7 +1475,7 @@ function populateLogTable(registrations) {
             }
         }
         
-        const citizenid = reg.citizenid || '';
+        const citizenid = reg.citizenid !== undefined && reg.citizenid !== null ? String(reg.citizenid).trim() : '';
         let maskedCitizen = citizenid;
         if (citizenid) {
             if (citizenid.length >= 13) {
@@ -1476,21 +1483,21 @@ function populateLogTable(registrations) {
             }
         }
         
-        const address = reg.address || '';
+        const address = reg.address !== undefined && reg.address !== null ? String(reg.address).trim() : '';
         const maskedAddress = address.length > 20 ? address.substring(0, 18) + "..." : address;
         
-        const plantingarea = reg.plantingarea || '';
+        const plantingarea = reg.plantingarea !== undefined && reg.plantingarea !== null ? String(reg.plantingarea).trim() : '';
         const maskedPlanting = plantingarea.length > 20 ? plantingarea.substring(0, 18) + "..." : plantingarea;
         
-        const memberId = reg.memberId || '';
-        const fullname = reg.fullname || '';
-        const lineid = reg.lineid || '';
-        const email = reg.email || '';
-        const seedlingType = reg.seedlingType || '';
-        const bookingMode = reg.bookingMode || '';
-        const qty = reg.qty || 0;
-        const total = reg.total || 0;
-        const pdfUrl = reg.pdfUrl || '#';
+        const memberId = reg.memberId !== undefined && reg.memberId !== null ? String(reg.memberId).trim() : '';
+        const fullname = reg.fullname !== undefined && reg.fullname !== null ? String(reg.fullname).trim() : '';
+        const lineid = reg.lineid !== undefined && reg.lineid !== null ? String(reg.lineid).trim() : '';
+        const email = reg.email !== undefined && reg.email !== null ? String(reg.email).trim() : '';
+        const seedlingType = reg.seedlingType !== undefined && reg.seedlingType !== null ? String(reg.seedlingType).trim() : '';
+        const bookingMode = reg.bookingMode !== undefined && reg.bookingMode !== null ? String(reg.bookingMode).trim() : '';
+        const qty = Number(reg.qty) || 0;
+        const total = Number(reg.total) || 0;
+        const pdfUrl = reg.pdfUrl !== undefined && reg.pdfUrl !== null ? String(reg.pdfUrl).trim() : '#';
         
         htmlContent += `
             <tr>
@@ -1521,10 +1528,16 @@ function rebuildTopSupporters(registrations) {
     // Aggregate by user name
     const agg = {};
     registrations.forEach(reg => {
-        if (!agg[reg.fullname]) {
-            agg[reg.fullname] = { qty: 0, mode: reg.bookingMode };
+        const fullname = reg.fullname !== undefined && reg.fullname !== null ? String(reg.fullname).trim() : 'ไม่ระบุชื่อ';
+        const bookingMode = reg.bookingMode !== undefined && reg.bookingMode !== null ? String(reg.bookingMode).trim() : 'tree';
+        const qty = Number(reg.qty) || 0;
+        
+        if (fullname) {
+            if (!agg[fullname]) {
+                agg[fullname] = { qty: 0, mode: bookingMode };
+            }
+            agg[fullname].qty += qty;
         }
-        agg[reg.fullname].qty += reg.qty;
     });
     
     const supporters = Object.keys(agg).map(name => {
@@ -1570,9 +1583,11 @@ function rebuildChart(registrations) {
     registrations.forEach(reg => {
         if (reg.timestamp) {
             const date = new Date(reg.timestamp);
-            const month = date.getMonth(); // 0-11
-            if (month >= 0 && month <= 6) { // Jan-Jul
-                counts[month]++;
+            if (!isNaN(date.getTime())) {
+                const month = date.getMonth(); // 0-11
+                if (month >= 0 && month <= 6) { // Jan-Jul
+                    counts[month]++;
+                }
             }
         }
     });
