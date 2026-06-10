@@ -2241,6 +2241,16 @@ img {
     border-radius: 50%;
 }
 
+.legend-dot.study-pin {
+    background-color: var(--color-accent-gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+}
+
 @keyframes legend-pulse {
     0% {
         box-shadow: 0 0 0 0 rgba(44, 94, 67, 0.4);
@@ -2295,7 +2305,8 @@ img {
     content: '☕';
 }
 
-.marker-pin.hub-marker::after {
+.marker-pin.hub-marker::after,
+.marker-pin.study-marker::after {
     content: '' !important;
 }
 

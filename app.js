@@ -1166,7 +1166,7 @@ function drawCanvasContent(ctx, canvas, loadedImages, callback) {
     ctx.textAlign = 'left';
     ctx.fillStyle = '#faf7f2';
     ctx.font = '11px Prompt, sans-serif';
-    ctx.fillText('📍 สถานที่ติดต่อ: 456 Coffee วิสาหกิจชุมชนแปรรูปกาแฟ 456 อำเภอกุฉินารายณ์ จังหวัดกาฬสินธุ์', 60, 1625);
+    ctx.fillText('📍 สำนักงานขาย: 2/22 ถนนบายพาสหัวคู (ตรงข้ามศูนย์ราชการ) อ.เมืองกาฬสินธุ์ จ.กาฬสินธุ์ 46000', 60, 1625);
     ctx.fillText('📞 เบอร์โทรศัพท์: 098-565-2966   |   📧 อีเมลกลาง: 456cafe.kalasin@gmail.com', 60, 1645);
 
     ctx.textAlign = 'right';
@@ -1683,7 +1683,7 @@ function initPlantingMap() {
         maxZoom: 20
     }).addTo(leafletMap);
     
-    // Add 456 Cafe Hub coordinates (Kuchinarai / Khao Wong area)
+    // Add 456 Cafe Sales Office Hub coordinates (Mueang Kalasin)
     const hubIcon = L.divIcon({
         className: 'custom-map-marker',
         html: '<div class="marker-pin hub-marker" style="background: #3d271d; border-color: #c5a880;"><i class="fa-solid fa-store" style="font-size: 8px; color: #fff; transform: rotate(45deg); display: block; margin-left: 1px; margin-top: 1px;"></i></div>',
@@ -1691,9 +1691,21 @@ function initPlantingMap() {
         iconAnchor: [15, 30]
     });
     
-    L.marker([16.6903, 104.0922], { icon: hubIcon })
+    L.marker([16.442, 103.505], { icon: hubIcon })
         .addTo(leafletMap)
-        .bindPopup('<strong>📍 456 Café (ศูนย์ประสานงานหลัก)</strong><br/>จุดรับต้นกล้าและแปรรูปกาแฟ');
+        .bindPopup('<strong>📍 สำนักงานขาย 456 Coffee (หลังใหม่)</strong><br/>2/22 ถนนบายพาสหัวคู (ตรงข้ามศูนย์ราชการ) อ.เมืองกาฬสินธุ์');
+
+    // Add 456 Cafe Processing/Study Visit coordinates (Kuchinarai)
+    const studyIcon = L.divIcon({
+        className: 'custom-map-marker',
+        html: '<div class="marker-pin study-marker" style="background: #c5a880; border-color: #3d271d;"><i class="fa-solid fa-industry" style="font-size: 8px; color: #fff; transform: rotate(45deg); display: block; margin-left: 1px; margin-top: 1px;"></i></div>',
+        iconSize: [30, 30],
+        iconAnchor: [15, 30]
+    });
+    
+    L.marker([16.4207, 104.0836], { icon: studyIcon })
+        .addTo(leafletMap)
+        .bindPopup('<strong>📍 กลุ่มวิสาหกิจแปรรูปกาแฟ 456 (สถานที่ศึกษาดูงาน)</strong><br/>อ.กุฉินารายณ์ จ.กาฬสินธุ์<br/><a href="https://maps.app.goo.gl/pko1B5VtmuNfHPnn9" target="_blank" style="color:#3d271d;font-weight:bold;text-decoration:underline;">เปิดแผนที่ Google Maps</a>');
         
     markerGroup = L.layerGroup().addTo(leafletMap);
 }
