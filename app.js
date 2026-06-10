@@ -1139,7 +1139,7 @@ function drawCanvasContent(ctx, canvas, loadedImages, callback) {
     ctx.font = '14px Prompt, sans-serif';
     ctx.fillText('ลงชื่อ .........................................................................', 910, 1315);
     ctx.fillStyle = '#2c211a';
-    ctx.fillText('( นายพัฒนวิทย์ อุดมศิลป์ )', 910, 1345);
+    ctx.fillText('( นายนพดล สิงห์ภักดี )', 910, 1345);
     ctx.fillStyle = '#7d6e65';
     ctx.font = '12px Prompt, sans-serif';
     ctx.fillText('ตำแหน่ง: ประธานวิสาหกิจชุมชนแปรรูปกาแฟ 456', 910, 1370);
@@ -1165,8 +1165,8 @@ function drawCanvasContent(ctx, canvas, loadedImages, callback) {
     ctx.textAlign = 'left';
     ctx.fillStyle = '#faf7f2';
     ctx.font = '11px Prompt, sans-serif';
-    ctx.fillText('📍 สถานที่ติดต่อ: วิสาหกิจชุมชนแปรรูปกาแฟ 456 เลขที่ 36 หมู่ 4 ต.กุดสิม อ.กุฉินารายณ์ จ.กาฬสินธุ์ 46110', 60, 1625);
-    ctx.fillText('📞 โทรศัพท์: 098-565-2966   |   🌐 Facebook: 456 Caffe กาแฟกาฬสินธุ์บ้านเฮา', 60, 1645);
+    ctx.fillText('📍 สถานที่ติดต่อ: 456 Coffee วิสาหกิจชุมชนแปรรูปกาแฟ 456 อำเภอกุฉินารายณ์ จังหวัดกาฬสินธุ์', 60, 1625);
+    ctx.fillText('📞 เบอร์โทรศัพท์: 098-565-2966   |   📧 อีเมลกลาง: 456cafe.kalasin@gmail.com', 60, 1645);
 
     ctx.textAlign = 'right';
     ctx.fillStyle = '#c5a880';

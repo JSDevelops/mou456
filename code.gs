@@ -123,9 +123,9 @@ function doPost(e) {
               "<p style='margin-bottom: 0;'>หากท่านต้องการติดต่อสอบถามความคืบหน้าของกล้ากาแฟ หรือข่าวสารสิทธิประโยชน์สมาชิก สามารถติดต่อเราผ่าน LINE Official ได้ตลอดเวลา</p>" +
             "</div>" +
             "<div style='background-color: #3d271d; padding: 20px; text-align: center; color: #7d6e65; font-size: 12px; border-top: 1px solid rgba(197, 168, 128, 0.2);'>" +
-              "<p style='margin: 0; color: #c5a880;'>วิสาหกิจชุมชนแปรรูปกาแฟ 456</p>" +
-              "<p style='margin: 5px 0 0 0;'>เลขที่ 36 หมู่ 4 ต.กุดสิม อ.เขาวง จ.กาฬสินธุ์ 46110</p>" +
-              "<p style='margin: 5px 0 0 0;'>โทร: 098-565-2966</p>" +
+              "<p style='margin: 0; color: #c5a880;'>456 Coffee วิสาหกิจชุมชนแปรรูปกาแฟ 456</p>" +
+              "<p style='margin: 5px 0 0 0;'>อำเภอกุฉินารายณ์ จังหวัดกาฬสินธุ์</p>" +
+              "<p style='margin: 5px 0 0 0;'>โทร: 098-565-2966 | อีเมล: 456cafe.kalasin@gmail.com</p>" +
             "</div>" +
           "</div>";
           
