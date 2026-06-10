@@ -8,7 +8,7 @@
 
 // Google Apps Script Web App URL for Google Sheets synchronization
 // วาง URL ที่ได้จากขั้นตอนการ Deploy Apps Script ที่นี่ (เช่น "https://script.google.com/macros/s/.../exec")
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxsUqtXYbi8hTGPnlE52Y5LSsIwhCa9U9ncl-S--s17nXhwy2i4kKXOh_R6sznmUROfDw/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzxuMQ0srLuoe_64aQcUetXDZwxYPHj7zREGXHlkMA71tHyN5jBeudYT_gVIQ5kjPSm5g/exec";
 
 // Global variables for dashboard state
 let totalMembers = 0;
