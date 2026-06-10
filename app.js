@@ -1589,3 +1589,30 @@ function rebuildChart(registrations) {
     monthlyChart.data.datasets[0].data = counts;
     monthlyChart.update();
 }
+
+/* ==========================================================================
+   MODAL OVERLAY DISPLAY CONTROLS
+   ========================================================================== */
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // prevent scrolling underneath
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+    modal.classList.remove('active');
+    document.body.style.overflow = ''; // restore scrolling
+}
+
+// Close modal if clicked outside card content
+window.addEventListener('click', (e) => {
+    const overlays = document.querySelectorAll('.modal-overlay');
+    overlays.forEach(overlay => {
+        if (e.target === overlay) {
+            closeModal(overlay.id);
+        }
+    });
+});
