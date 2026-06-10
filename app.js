@@ -8,7 +8,7 @@
 
 // Google Apps Script Web App URL for Google Sheets synchronization
 // วาง URL ที่ได้จากขั้นตอนการ Deploy Apps Script ที่นี่ (เช่น "https://script.google.com/macros/s/.../exec")
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzndOxPwc7FHKw_jRwXu0HGW46vTqjrzDnmS7QY6SXwQwQ-Bxn-dIQ7j_GTJJmGMmlBgA/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyH2gFNE-kZtFzautfGAT_V9DzLTvBF5naRAVABShzljBVVTXdNZBIzmLeqvc4TQdD_NA/exec";
 
 // Global variables for dashboard state
 let totalMembers = 125;
@@ -27,7 +27,10 @@ let registrationData = {
     bookingMode: 'tree', // 'tree' or 'rai'
     qty: 20,
     total: 1000,
-    memberId: ''
+    memberId: '',
+    citizenid: '',
+    address: '',
+    plantingarea: ''
 };
 
 // Chart.js instance variable
@@ -186,13 +189,25 @@ function validateStep(step) {
             nameInput.classList.remove('invalid-input');
             registrationData.fullname = nameInput.value.trim();
         }
+
+        const citizenInput = document.getElementById('input-citizenid');
+        const citizenErr = document.getElementById('err-citizenid');
+        const citizenVal = citizenInput.value.replace(/[^0-9]/g, '');
+        if (citizenVal.length !== 13) {
+            citizenErr.style.display = 'block';
+            citizenInput.classList.add('invalid-input');
+            isValid = false;
+        } else {
+            citizenErr.style.display = 'none';
+            citizenInput.classList.remove('invalid-input');
+            registrationData.citizenid = citizenVal;
+        }
     }
     
     if (step === 2) {
         const phoneInput = document.getElementById('input-phone');
         const phoneErr = document.getElementById('err-phone');
         const phoneVal = phoneInput.value.replace(/[^0-9]/g, '');
-        // Validate 10-digit phone number
         if (phoneVal.length !== 10) {
             phoneErr.style.display = 'block';
             phoneInput.classList.add('invalid-input');
@@ -202,9 +217,7 @@ function validateStep(step) {
             phoneInput.classList.remove('invalid-input');
             registrationData.phone = phoneVal.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
         }
-    }
 
-    if (step === 3) {
         const lineInput = document.getElementById('input-lineid');
         const lineErr = document.getElementById('err-lineid');
         if (lineInput.value.trim() === '') {
@@ -215,6 +228,32 @@ function validateStep(step) {
             lineErr.style.display = 'none';
             lineInput.classList.remove('invalid-input');
             registrationData.lineid = lineInput.value.trim();
+        }
+    }
+
+    if (step === 3) {
+        const addressInput = document.getElementById('input-address');
+        const addressErr = document.getElementById('err-address');
+        if (addressInput.value.trim() === '') {
+            addressErr.style.display = 'block';
+            addressInput.classList.add('invalid-input');
+            isValid = false;
+        } else {
+            addressErr.style.display = 'none';
+            addressInput.classList.remove('invalid-input');
+            registrationData.address = addressInput.value.trim();
+        }
+
+        const plantingInput = document.getElementById('input-plantingarea');
+        const plantingErr = document.getElementById('err-plantingarea');
+        if (plantingInput.value.trim() === '') {
+            plantingErr.style.display = 'block';
+            plantingInput.classList.add('invalid-input');
+            isValid = false;
+        } else {
+            plantingErr.style.display = 'none';
+            plantingInput.classList.remove('invalid-input');
+            registrationData.plantingarea = plantingInput.value.trim();
         }
     }
 
@@ -240,8 +279,11 @@ function validateStep(step) {
 
 function populateConfirmationData() {
     document.getElementById('confirm-name').innerText = registrationData.fullname;
+    document.getElementById('confirm-citizenid').innerText = registrationData.citizenid.replace(/(\d{1})(\d{4})(\d{5})(\d{2})(\d{1})/, '$1-$2-$3-$4-$5');
     document.getElementById('confirm-phone').innerText = registrationData.phone;
     document.getElementById('confirm-line').innerText = registrationData.lineid;
+    document.getElementById('confirm-address').innerText = registrationData.address;
+    document.getElementById('confirm-plantingarea').innerText = registrationData.plantingarea;
     document.getElementById('confirm-email').innerText = registrationData.email;
     document.getElementById('confirm-age').innerText = registrationData.seedlingType === '1-2m' ? '1-2 เดือน' : '1 ปี';
     document.getElementById('confirm-mode').innerText = registrationData.bookingMode === 'rai' ? 'จองรายไร่' : 'จองรายต้น';
@@ -393,76 +435,63 @@ function submitRegistration() {
     registrationData.memberId = memberId;
     nextMemberIndex++;
     
-    let progress = 0;
-    let uploadStarted = false;
-    let uploadFinished = false;
+    statusText.innerText = "กำลังจัดทำเอกสารความตกลงร่วมมือ MOU (PDF)...";
+    progressBar.style.width = "25%";
     
-    const steps = [
-        { limit: 25, msg: "กำลังเชื่อมต่อกับระบบฐานข้อมูล..." },
-        { limit: 50, msg: "บันทึกข้อมูลเข้าตาราง Google Sheets..." },
-        { limit: 75, msg: "จัดทำเอกสารความตกลงร่วมมือ MOU (PDF)..." },
-        { limit: 100, msg: "ส่งอีเมลและรหัสสมาชิกให้คุณ..." }
-    ];
-    
-    let stepIndex = 0;
-
-    // Send data to Google Sheets via Apps Script Web App
-    if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "") {
-        uploadStarted = true;
-        fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                memberId: registrationData.memberId,
-                fullname: registrationData.fullname,
-                phone: registrationData.phone,
-                lineid: registrationData.lineid,
-                email: registrationData.email,
-                seedlingType: registrationData.seedlingType === '1-2m' ? '1-2 เดือน' : '1 ปี',
-                bookingMode: registrationData.bookingMode === 'rai' ? 'ไร่' : 'ต้น',
-                qty: registrationData.qty,
-                total: registrationData.total
+    buildMOUCanvasAndPDF((doc) => {
+        progressBar.style.width = "50%";
+        statusText.innerText = "กำลังส่งข้อมูลการจองและอัปโหลดเอกสาร...";
+        
+        const pdfBase64 = doc.output('datauristring').split(',')[1];
+        
+        if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "") {
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    memberId: registrationData.memberId,
+                    fullname: registrationData.fullname,
+                    citizenid: registrationData.citizenid,
+                    phone: registrationData.phone,
+                    lineid: registrationData.lineid,
+                    address: registrationData.address,
+                    email: registrationData.email,
+                    seedlingType: registrationData.seedlingType === '1-2m' ? '1-2 เดือน' : '1 ปี',
+                    bookingMode: registrationData.bookingMode === 'rai' ? 'ไร่' : 'ต้น',
+                    qty: registrationData.qty,
+                    total: registrationData.total,
+                    plantingarea: registrationData.plantingarea,
+                    pdfBase64: pdfBase64
+                })
             })
-        })
-        .then(() => {
-            uploadFinished = true;
-            console.log("บันทึกข้อมูลไปยัง Google Sheets สำเร็จ");
-        })
-        .catch((err) => {
-            uploadFinished = true;
-            console.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล:", err);
-        });
-    } else {
-        console.warn("GOOGLE_SCRIPT_URL ไม่ได้กำหนดไว้ จะทำงานในโหมดจำลอง (Simulated mode)");
-    }
-    
-    const interval = setInterval(() => {
-        // Pause at 50% if upload has started but not finished yet
-        if (uploadStarted && progress >= 50 && !uploadFinished) {
-            statusText.innerText = "กำลังอัปโหลดข้อมูลไปยัง Google Sheet ของคุณ...";
-            return;
-        }
-
-        progress += 5;
-        progressBar.style.width = `${progress}%`;
-        
-        if (stepIndex < steps.length && progress >= steps[stepIndex].limit) {
-            statusText.innerText = steps[stepIndex].msg;
-            stepIndex++;
-        }
-        
-        if (progress >= 100) {
-            clearInterval(interval);
-            
-            // Trigger Success Layout
+            .then(() => {
+                progressBar.style.width = "100%";
+                statusText.innerText = "บันทึกข้อมูลและส่งอีเมลเรียบร้อย!";
+                setTimeout(() => {
+                    showSuccessScreen();
+                }, 500);
+            })
+            .catch((err) => {
+                console.error("Error submitting registration:", err);
+                progressBar.style.width = "100%";
+                statusText.innerText = "เกิดข้อผิดพลาดในการเชื่อมต่อเครือข่าย";
+                setTimeout(() => {
+                    showSuccessScreen();
+                }, 1000);
+            });
+        } else {
             setTimeout(() => {
-                showSuccessScreen();
-            }, 300);
+                progressBar.style.width = "100%";
+                statusText.innerText = "เสร็จสิ้น (โหมดจำลอง)";
+                setTimeout(() => {
+                    showSuccessScreen();
+                }, 500);
+            }, 1000);
         }
-    }, 150);
+    });
 }
 
 function showSuccessScreen() {
@@ -598,8 +627,11 @@ function appendDataToSheetTable() {
     const row = document.createElement('tr');
     row.style.backgroundColor = '#f4fbf7'; // highlighted background for new entries
     
-    // Mask phone number for dashboard visual
+    // Mask phone number and citizen ID for dashboard visual
     const maskedPhone = registrationData.phone.replace(/(\d{3})-(\d{3})-(\d{4})/, '$1-XXX-$3');
+    const maskedCitizen = registrationData.citizenid.replace(/(\d{3})\d{7}(\d{3})/, '$1XXXXXXX$2');
+    const maskedAddress = registrationData.address.length > 20 ? registrationData.address.substring(0, 18) + "..." : registrationData.address;
+    const maskedPlanting = registrationData.plantingarea.length > 20 ? registrationData.plantingarea.substring(0, 18) + "..." : registrationData.plantingarea;
     
     const seedlingText = registrationData.seedlingType === '1-2m' ? '1-2 เดือน' : '1 ปี';
     const modeText = registrationData.bookingMode === 'rai' ? 'ไร่' : 'ต้น';
@@ -608,13 +640,16 @@ function appendDataToSheetTable() {
         <td>${dateStr}</td>
         <td><strong>${registrationData.memberId}</strong></td>
         <td>${registrationData.fullname}</td>
+        <td>${maskedCitizen}</td>
         <td>${maskedPhone}</td>
         <td>${registrationData.lineid}</td>
+        <td>${maskedAddress}</td>
         <td>${registrationData.email}</td>
         <td>${seedlingText}</td>
         <td>${modeText}</td>
         <td>${registrationData.qty}</td>
         <td>${registrationData.total.toLocaleString()}</td>
+        <td>${maskedPlanting}</td>
         <td><span class="badge badge-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span></td>
     `;
     
@@ -715,171 +750,563 @@ function generateMOUPDF() {
     btn.disabled = true;
     btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังสร้างเอกสาร...`;
 
-    // Create a canvas element to design the certificate
+    buildMOUCanvasAndPDF((doc) => {
+        doc.save(`MOU_${registrationData.memberId}.pdf`);
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-file-pdf"></i> ดาวน์โหลดใบสำคัญ MOU (PDF)`;
+    });
+}
+
+function buildMOUCanvasAndPDF(callback) {
     const canvas = document.createElement('canvas');
-    canvas.width = 1120; // 4:3 high res layout
-    canvas.height = 792;
+    canvas.width = 1200; // high-res portrait A4 aspect ratio (1200 x 1700)
+    canvas.height = 1700;
     const ctx = canvas.getContext('2d');
+    
+    // Load images dynamically
+    const imagesToLoad = [
+        { name: 'logo', src: './logo 456 cafe_1.png' },
+        { name: 'qrcode', src: './dbarcodes_line.png' }
+    ];
+    
+    let loadedCount = 0;
+    const loadedImages = {};
+    
+    imagesToLoad.forEach(imgData => {
+        const img = new Image();
+        img.src = imgData.src;
+        img.onload = () => {
+            loadedImages[imgData.name] = img;
+            loadedCount++;
+            if (loadedCount === imagesToLoad.length) {
+                drawCanvasContent(ctx, canvas, loadedImages, callback);
+            }
+        };
+        img.onerror = () => {
+            loadedImages[imgData.name] = null; // fallback will handle it
+            loadedCount++;
+            if (loadedCount === imagesToLoad.length) {
+                drawCanvasContent(ctx, canvas, loadedImages, callback);
+            }
+        };
+    });
+}
+
+function drawCanvasContent(ctx, canvas, loadedImages, callback) {
+    const w = canvas.width;
+    const h = canvas.height;
 
     // Fill background with warm parchment/cream tone
     ctx.fillStyle = '#faf7f2';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, w, h);
 
-    // Draw solid inner borders
+    // Draw borders
     ctx.strokeStyle = '#c5a880'; // Gold border
-    ctx.lineWidth = 10;
-    ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+    ctx.lineWidth = 8;
+    ctx.strokeRect(20, 20, w - 40, h - 40);
 
     ctx.strokeStyle = '#3d271d'; // Fine brown line
     ctx.lineWidth = 2;
-    ctx.strokeRect(32, 32, canvas.width - 64, canvas.height - 64);
+    ctx.strokeRect(32, 32, w - 64, h - 64);
 
-    // Corner decorative details
-    drawCornerDecors(ctx, canvas.width, canvas.height);
+    // Draw Corner Decorations
+    drawCornerDecors(ctx, w, h);
 
-    // Helper functions for drawing text in Thai
-    ctx.textAlign = 'center';
+    // ----------------------------------------------------
+    // HEADER AREA
+    // ----------------------------------------------------
     
-    // Draw Logo placeholder
-    const logoImg = new Image();
-    logoImg.src = './logo 456 cafe_1.png';
-    logoImg.onload = function() {
-        ctx.drawImage(logoImg, canvas.width / 2 - 40, 60, 80, 80);
-        writeCertificateText();
-    };
-    
-    logoImg.onerror = function() {
+    // Left: Logo
+    if (loadedImages.logo) {
+        ctx.drawImage(loadedImages.logo, 60, 60, 140, 140);
+    } else {
         // Fallback drawing simple circular logo on canvas
         ctx.beginPath();
-        ctx.arc(canvas.width / 2, 100, 40, 0, 2 * Math.PI);
+        ctx.arc(130, 130, 60, 0, 2 * Math.PI);
         ctx.fillStyle = '#3d271d';
         ctx.fill();
         ctx.strokeStyle = '#c5a880';
         ctx.lineWidth = 3;
         ctx.stroke();
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 20px Prompt, sans-serif';
-        ctx.fillText('456', canvas.width / 2, 107);
-        writeCertificateText();
-    };
-
-    function writeCertificateText() {
-        // Main Headers
-        ctx.fillStyle = '#3d271d';
-        ctx.font = 'bold 28px Prompt, sans-serif';
-        ctx.fillText('หนังสือบันทึกข้อตกลงร่วมมือ (MOU)', canvas.width / 2, 185);
-
-        ctx.fillStyle = '#2c5e43';
-        ctx.font = '600 20px Prompt, sans-serif';
-        ctx.fillText('โครงการ “1 ต้น 1 ความหวัง” โดยวิสาหกิจชุมชนแปรรูปกาแฟ 456', canvas.width / 2, 225);
-
-        ctx.fillStyle = '#7d6e65';
-        ctx.font = '14px Prompt, sans-serif';
-        ctx.fillText('----------------------------------------------------------------------------------------------------', canvas.width / 2, 255);
-
-        // Body Text
-        ctx.fillStyle = '#2c211a';
-        ctx.font = '18px Prompt, sans-serif';
-        ctx.fillText('หนังสือสำคัญฉบับนี้จัดทำขึ้นเพื่อรับรองการเข้าร่วมเป็นส่วนหนึ่งในการสนับสนุนและจองต้นกาแฟ', canvas.width / 2, 290);
-        
         ctx.font = 'bold 24px Prompt, sans-serif';
-        ctx.fillStyle = '#3d271d';
-        ctx.fillText(registrationData.fullname, canvas.width / 2, 340); // Member Name
-
-        ctx.fillStyle = '#2c211a';
-        ctx.font = '18px Prompt, sans-serif';
-        ctx.fillText(`รหัสสมาชิกประจำตัว: ${registrationData.memberId}`, canvas.width / 2, 385);
-        
-        const unitName = registrationData.bookingMode === 'rai' ? 'ไร่' : 'ต้น';
-        const seedlingAgeText = registrationData.seedlingType === '1-2m' ? '1-2 เดือน' : '1 ปี';
-        ctx.fillText(`ได้ร่วมสนับสนุนกล้ากาแฟอายุ ${seedlingAgeText} จำนวน ${registrationData.qty} ${unitName}  เป็นมูลค่ารวม ${registrationData.total.toLocaleString()} บาท`, canvas.width / 2, 425);
-        ctx.fillText('เพื่อร่วมสร้างผืนป่ากาแฟ สร้างอาชีพ และสร้างรายได้ที่ยั่งยืนให้แก่เกษตรกรท้องถิ่น จังหวัดกาฬสินธุ์', canvas.width / 2, 465);
-
-        // Signatures Area
-        ctx.fillStyle = '#7d6e65';
-        ctx.font = '13px Prompt, sans-serif';
-        ctx.fillText('ให้ไว้ ณ วันที่สมัครเข้าร่วมโครงการวิสาหกิจชุมชน', canvas.width / 2, 510);
-        
-        const now = new Date();
-        const fullDateStr = `วันที่ ${now.getDate()} เดือน ${getThaiMonthName(now.getMonth())} พ.ศ. ${now.getFullYear() + 543}`;
-        ctx.fillStyle = '#2c211a';
-        ctx.font = 'bold 15px Prompt, sans-serif';
-        ctx.fillText(fullDateStr, canvas.width / 2, 535);
-
-        // Signatures lines
-        ctx.strokeStyle = 'rgba(61, 39, 29, 0.4)';
-        ctx.lineWidth = 1;
-        
-        // Left signature (President of Enterprise)
-        ctx.beginPath();
-        ctx.moveTo(180, 650);
-        ctx.lineTo(420, 650);
-        ctx.stroke();
-        
-        ctx.fillStyle = '#7d6e65';
-        ctx.font = '14px Prompt, sans-serif';
-        ctx.fillText('( นายพัฒนวิทย์ อุดมศิลป์ )', 300, 675);
-        ctx.font = '12px Prompt, sans-serif';
-        ctx.fillText('ประธานวิสาหกิจชุมชนแปรรูปกาแฟ 456', 300, 695);
-
-        // Right signature (Member)
-        ctx.beginPath();
-        ctx.moveTo(700, 650);
-        ctx.lineTo(940, 650);
-        ctx.stroke();
-        
-        ctx.fillStyle = '#7d6e65';
-        ctx.font = '14px Prompt, sans-serif';
-        ctx.fillText(`( ${registrationData.fullname} )`, 820, 675);
-        ctx.font = '12px Prompt, sans-serif';
-        ctx.fillText('ผู้เข้าร่วมโครงการสมาชิกปลูกกาแฟ', 820, 695);
-
-        // Draw dynamic signature mock on Member line
-        ctx.strokeStyle = '#0000ff';
-        ctx.lineWidth = 2.5;
-        ctx.beginPath();
-        ctx.arc(820, 630, 20, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.font = 'italic 16px Courier, sans-serif';
-        ctx.fillStyle = '#0000ff';
-        ctx.fillText(registrationData.fullname.split(' ')[0], 820, 635);
-
-        // Draw President signature mock
-        ctx.strokeStyle = '#053f1d';
-        ctx.beginPath();
-        ctx.arc(300, 630, 18, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.font = 'italic 16px Courier, sans-serif';
-        ctx.fillStyle = '#053f1d';
-        ctx.fillText('Pattana', 300, 635);
-
-        // Stamp seal mock in the center background
-        ctx.beginPath();
-        ctx.arc(560, 630, 45, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(220, 53, 69, 0.45)';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-        ctx.font = 'bold 9px Prompt, sans-serif';
-        ctx.fillStyle = 'rgba(220, 53, 69, 0.45)';
-        ctx.fillText('วิสาหกิจชุมชน 456', 560, 625);
-        ctx.fillText('กาแฟกาฬสินธุ์', 560, 640);
-
-        // Convert canvas to image and add to PDF
-        const imgData = canvas.toDataURL('image/jpeg', 1.0);
-        const { jsPDF } = window.jspdf;
-        
-        // landscape orientation, pt unit, A4 size
-        const doc = new jsPDF('l', 'pt', 'a4');
-        const pdfWidth = doc.internal.pageSize.getWidth();
-        const pdfHeight = doc.internal.pageSize.getHeight();
-        
-        doc.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-        doc.save(`MOU_${registrationData.memberId}.pdf`);
-
-        // Re-enable button
-        btn.disabled = false;
-        btn.innerHTML = `<i class="fa-solid fa-file-pdf"></i> ดาวน์โหลดใบสำคัญ MOU (PDF)`;
+        ctx.textAlign = 'center';
+        ctx.fillText('456', 130, 138);
     }
+
+    // Right: QR Code Group
+    ctx.strokeStyle = 'rgba(61, 39, 29, 0.2)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(980, 60, 140, 140);
+    if (loadedImages.qrcode) {
+        ctx.drawImage(loadedImages.qrcode, 990, 70, 120, 120);
+    }
+    
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#3d271d';
+    ctx.font = 'bold 12px Prompt, sans-serif';
+    ctx.fillText('สแกนสมัครสมาชิก', 1050, 48);
+    ctx.fillStyle = '#2c5e43';
+    ctx.font = 'bold 12px Prompt, sans-serif';
+    ctx.fillText('LINE Official', 1050, 215);
+    ctx.fillStyle = '#7d6e65';
+    ctx.font = '10px Prompt, sans-serif';
+    ctx.fillText('ติดตามข่าวสารโครงการ', 1050, 230);
+    ctx.fillText('และสิทธิประโยชน์', 1050, 243);
+
+    // Center: Title Text
+    ctx.textAlign = 'center';
+    
+    // Badge: "บันทึกข้อตกลงความร่วมมือ (MOU)"
+    ctx.fillStyle = '#3d271d';
+    ctx.font = 'bold 28px Prompt, sans-serif';
+    ctx.fillText('บันทึกข้อตกลงความร่วมมือ (MOU)', 600, 95);
+
+    // Badge: "โครงการ"
+    ctx.fillStyle = '#c5a880';
+    drawRoundedRect(ctx, 520, 112, 160, 32, 6, true, false);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 16px Prompt, sans-serif';
+    ctx.fillText('โครงการ', 600, 134);
+
+    // Title: "1 ต้น 1 ความหวัง"
+    ctx.fillStyle = '#3d271d';
+    ctx.font = 'bold 54px Prompt, sans-serif';
+    ctx.fillText('1 ต้น 1 ความหวัง', 600, 205);
+
+    // Subtitle: "กาแฟท้องถิ่น กาฬสินธุ์บ้านเฮา"
+    ctx.fillStyle = '#c5a880';
+    ctx.font = '500 24px Prompt, sans-serif';
+    ctx.fillText('กาแฟท้องถิ่น กาฬสินธุ์บ้านเฮา', 600, 245);
+
+    ctx.fillStyle = '#7d6e65';
+    ctx.font = '14px Prompt, sans-serif';
+    ctx.fillText('ดำเนินการโดย', 600, 275);
+
+    // Badge: วิสาหกิจชุมชน...
+    ctx.fillStyle = '#3d271d';
+    drawRoundedRect(ctx, 250, 290, 700, 38, 8, true, false);
+    ctx.fillStyle = '#faf7f2';
+    ctx.font = 'bold 16px Prompt, sans-serif';
+    ctx.fillText('วิสาหกิจชุมชนแปรรูปกาแฟ 456 อำเภอกุฉินารายณ์ จังหวัดกาฬสินธุ์', 600, 314);
+
+    // Registry Number & Date
+    ctx.fillStyle = '#3d271d';
+    ctx.font = 'bold 16px Prompt, sans-serif';
+    ctx.fillText('ทะเบียนเลขที่ 4-46-05-04/1-0052', 600, 355);
+
+    const now = new Date();
+    const dateText = `วันที่ ${now.getDate()}   เดือน ${getThaiMonthName(now.getMonth())}   พ.ศ. ${now.getFullYear() + 543}`;
+    ctx.fillStyle = '#7d6e65';
+    ctx.font = '16px Prompt, sans-serif';
+    ctx.fillText(dateText, 600, 395);
+
+    // Horizontal Separator
+    ctx.strokeStyle = 'rgba(61, 39, 29, 0.15)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(60, 420);
+    ctx.lineTo(1140, 420);
+    ctx.stroke();
+
+    // ----------------------------------------------------
+    // INFORMATION DETAILS (TWO COLUMNS)
+    // ----------------------------------------------------
+    
+    // Vertical Separator
+    ctx.strokeStyle = 'rgba(197, 168, 128, 0.4)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(600, 445);
+    ctx.lineTo(600, 765);
+    ctx.stroke();
+
+    // LEFT COLUMN: ข้อมูลผู้จอง
+    ctx.fillStyle = '#3d271d';
+    drawRoundedRect(ctx, 60, 445, 180, 34, 17, true, false);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 14px Prompt, sans-serif';
+    ctx.fillText('👤 ข้อมูลผู้จอง', 150, 467);
+
+    const leftColX = 60;
+    const leftColW = 500;
+    
+    drawTextLineWithDots(ctx, 'ชื่อ-สกุล / หน่วยงาน', registrationData.fullname, leftColX, 520, leftColW);
+    
+    const formattedCitizen = registrationData.citizenid.replace(/(\d{1})(\d{4})(\d{5})(\d{2})(\d{1})/, '$1-$2-$3-$4-$5');
+    drawTextLineWithDots(ctx, 'เลขบัตรประชาชน / ทะเบียนนิติบุคคล', formattedCitizen, leftColX, 570, leftColW);
+    
+    // Draw Address (supporting wrapping if long)
+    const rawAddress = registrationData.address;
+    if (ctx.measureText(rawAddress).width > 350) {
+        const mid = Math.floor(rawAddress.length / 2);
+        const line1 = rawAddress.substring(0, mid);
+        const line2 = rawAddress.substring(mid);
+        drawTextLineWithDots(ctx, 'ที่อยู่', line1, leftColX, 620, leftColW);
+        drawTextLineWithDots(ctx, '', line2, leftColX, 660, leftColW);
+    } else {
+        drawTextLineWithDots(ctx, 'ที่อยู่', rawAddress, leftColX, 620, leftColW);
+    }
+    
+    drawTextLineWithDots(ctx, 'โทรศัพท์', registrationData.phone, leftColX, 705, 230);
+    drawTextLineWithDots(ctx, 'LINE ID', registrationData.lineid, leftColX + 260, 705, 240);
+    
+    drawTextLineWithDots(ctx, 'E-mail (ถ้ามี)', registrationData.email, leftColX, 755, leftColW);
+
+    // RIGHT COLUMN: รายละเอียดการจอง
+    ctx.fillStyle = '#3d271d';
+    drawRoundedRect(ctx, 640, 445, 200, 34, 17, true, false);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 14px Prompt, sans-serif';
+    ctx.fillText('🌱 รายละเอียดการจอง', 740, 467);
+
+    const rightColX = 640;
+    const rightColW = 500;
+    
+    const seedlingText = registrationData.seedlingType === '1-2m' ? '1-2 เดือน' : '1 ปี';
+    const bookingModeText = registrationData.bookingMode === 'rai' ? 'ไร่' : 'ต้น';
+    const pricePerUnitVal = registrationData.seedlingType === '1-2m' ? (registrationData.bookingMode === 'rai' ? 25 : 50) : (registrationData.bookingMode === 'rai' ? 45 : 100);
+
+    drawTextLineWithDots(ctx, `จำนวนที่จอง (อายุกล้า ${seedlingText})`, `${registrationData.qty} ${bookingModeText}`, rightColX, 520, rightColW);
+    drawTextLineWithDots(ctx, `ราคาค่าจองต่อหน่วย`, `${pricePerUnitVal} บาท / ${bookingModeText}`, rightColX, 570, rightColW);
+    drawTextLineWithDots(ctx, `รวมเป็นเงินทั้งสิ้น`, `${registrationData.total.toLocaleString()} บาท`, rightColX, 620, rightColW);
+    
+    // Thai text conversion
+    const thaiText = thaiBahtText(registrationData.total);
+    drawTextLineWithDots(ctx, `ตัวเขียนจำนวนเงิน`, `( ${thaiText} )`, rightColX, 670, rightColW, '#c5a880', '#7d6e65', '#2c5e43');
+
+    // Planting location
+    ctx.fillStyle = '#c5a880';
+    drawRoundedRect(ctx, rightColX, 715, 110, 26, 4, true, false);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 12px Prompt, sans-serif';
+    ctx.fillText('พื้นที่ปลูก', rightColX + 55, 732);
+    
+    drawTextLineWithDots(ctx, `สถานที่ตั้งแปลง`, registrationData.plantingarea, rightColX, 765, rightColW);
+
+    // Horizontal Separator
+    ctx.strokeStyle = 'rgba(61, 39, 29, 0.15)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(60, 795);
+    ctx.lineTo(1140, 795);
+    ctx.stroke();
+
+    // ----------------------------------------------------
+    // AGREEMENT SECTION (ข้อตกลง)
+    // ----------------------------------------------------
+    
+    ctx.fillStyle = '#3d271d';
+    drawRoundedRect(ctx, 510, 810, 180, 36, 6, true, false);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 18px Prompt, sans-serif';
+    ctx.fillText('ข้อตกลง', 600, 834);
+
+    // Left half agreement items 1-3
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#3d271d';
+    
+    // Item 1
+    drawNumberBadge(ctx, 1, 60, 880);
+    ctx.font = 'bold 13px Prompt, sans-serif';
+    ctx.fillText('วิสาหกิจชุมชนแปรรูปกาแฟ 456 จะดำเนินการปลูก ดูแล', 100, 890);
+    ctx.font = '13px Prompt, sans-serif';
+    ctx.fillText('และบำรุงรักษาต้นกาแฟตามหลักวิชาการเกษตรอย่างเหมาะสม', 100, 910);
+
+    // Item 2
+    drawNumberBadge(ctx, 2, 60, 935);
+    ctx.font = 'bold 13px Prompt, sans-serif';
+    ctx.fillText('ผู้จองรับทราบว่าการเจริญเติบโตและผลผลิตอาจเปลี่ยนแปลง', 100, 945);
+    ctx.font = '13px Prompt, sans-serif';
+    ctx.fillText('ได้ตามสภาพอากาศ โรคพืช หรือเหตุสุดวิสัยซึ่งอยู่นอกเหนือการควบคุม', 100, 965);
+
+    // Item 3
+    drawNumberBadge(ctx, 3, 60, 990);
+    ctx.font = 'bold 13px Prompt, sans-serif';
+    ctx.fillText('ผู้จองมีสิทธิรับข้อมูลการเติบโตของต้นกาแฟเป็นระยะ', 100, 1000);
+    ctx.font = '13px Prompt, sans-serif';
+    ctx.fillText('และได้รับผลประโยชน์ตามเงื่อนไขของโครงการ ดังนี้:', 100, 1020);
+
+    // Draw 4 icon labels
+    drawIconFeature(ctx, '📋', 'ใบรับรอง', 70, 1050);
+    drawIconFeature(ctx, '🏷️', 'ป้ายชื่อ', 190, 1050);
+    drawIconFeature(ctx, '📊', 'รายงานผล', 310, 1050);
+    drawIconFeature(ctx, '☕', 'กาแฟคั่วพิเศษ', 430, 1050);
+
+    // Right half agreement items 4-5
+    // Item 4
+    drawNumberBadge(ctx, 4, 640, 880);
+    ctx.font = 'bold 13px Prompt, sans-serif';
+    ctx.fillText('ระยะเวลาโครงการ: 4 ปี นับจากวันเริ่มดำเนินการปลูก', 680, 895);
+
+    // Item 5
+    drawNumberBadge(ctx, 5, 640, 925);
+    ctx.font = 'bold 13px Prompt, sans-serif';
+    ctx.fillText('บันทึกข้อตกลงฉบับนี้จัดทำขึ้นด้วยความสมัครใจ', 680, 935);
+    ctx.font = '13px Prompt, sans-serif';
+    ctx.fillText('เพื่อร่วมสร้างผืนป่ากาแฟ สร้างอาชีพ และพัฒนาเศรษฐกิจฐานราก', 680, 955);
+
+    // Benefits box
+    ctx.fillStyle = '#faf0e0';
+    ctx.strokeStyle = '#c5a880';
+    ctx.lineWidth = 1;
+    drawRoundedRect(ctx, 640, 980, 500, 140, 8, true, true);
+    
+    ctx.fillStyle = '#3d271d';
+    ctx.font = 'bold 13px Prompt, sans-serif';
+    ctx.fillText('🎁 ผลประโยชน์สำหรับผู้จอง (เมื่อผลผลิตพร้อมเก็บเกี่ยว)', 660, 1008);
+    
+    ctx.font = '12px Prompt, sans-serif';
+    ctx.fillText('✓  ได้รับผลผลิตกาแฟคั่วคุณภาพ 1 กิโลกรัม / การจองทุก 10 ต้น ต่อปี', 660, 1035);
+    ctx.fillText('✓  ได้รับส่วนลดพิเศษสำหรับผลิตภัณฑ์ 456 Coffee ตลอดชีพ', 660, 1060);
+    ctx.fillText('✓  สิทธิ์เข้าร่วมกิจกรรมทริปวิสาหกิจชุมชนกาแฟฟรีประจำปี', 660, 1085);
+    ctx.fillText('✓  รับสิทธิพิเศษอื่น ๆ ตามที่โครงการกำหนดเพื่อสังคมชุมชน', 660, 1110);
+
+    // Horizontal Separator
+    ctx.strokeStyle = 'rgba(61, 39, 29, 0.15)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(60, 1145);
+    ctx.lineTo(1140, 1145);
+    ctx.stroke();
+
+    // ----------------------------------------------------
+    // SIGNATURES AREA (คำรับรอง)
+    // ----------------------------------------------------
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#3d271d';
+    ctx.font = 'bold 18px Prompt, sans-serif';
+    ctx.fillText('🛡️ คำรับรอง', 600, 1178);
+
+    ctx.font = 'italic 15px Prompt, sans-serif';
+    ctx.fillStyle = '#2c211a';
+    ctx.fillText('ข้าพเจ้ายินยอมเข้าร่วมโครงการ “1 ต้น 1 ความหวัง กาแฟท้องถิ่น กาฬสินธุ์บ้านเฮา” และยอมรับข้อตกลงตามที่ระบุไว้ทุกประการ', 600, 1210);
+
+    // Left Column Signature
+    ctx.fillStyle = '#3d271d';
+    drawRoundedRect(ctx, 190, 1235, 140, 28, 14, true, false);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 12px Prompt, sans-serif';
+    ctx.fillText('✍️ ผู้จอง', 260, 1253);
+
+    ctx.fillStyle = '#7d6e65';
+    ctx.font = '14px Prompt, sans-serif';
+    ctx.fillText('ลงชื่อ .........................................................................', 260, 1315);
+    ctx.fillStyle = '#2c211a';
+    ctx.fillText(`( ${registrationData.fullname} )`, 260, 1345);
+    ctx.fillStyle = '#7d6e65';
+    ctx.font = '12px Prompt, sans-serif';
+    ctx.fillText(`วันที่สมัคร: ${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear() + 543}`, 260, 1370);
+
+    // Mock signature for Member
+    ctx.strokeStyle = '#0000ff';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(260, 1295, 20, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.font = 'italic 16px Courier, sans-serif';
+    ctx.fillStyle = '#0000ff';
+    ctx.fillText(registrationData.fullname.split(' ')[0], 260, 1300);
+
+    // Center image: Branch of Coffee Cherries (mock drawn path)
+    drawCoffeeBranch(ctx, 600, 1300);
+
+    // Right Column Signature
+    ctx.fillStyle = '#3d271d';
+    drawRoundedRect(ctx, 810, 1235, 200, 28, 14, true, false);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 12px Prompt, sans-serif';
+    ctx.fillText('✍️ ผู้แทนวิสาหกิจชุมชน', 910, 1253);
+
+    ctx.fillStyle = '#7d6e65';
+    ctx.font = '14px Prompt, sans-serif';
+    ctx.fillText('ลงชื่อ .........................................................................', 910, 1315);
+    ctx.fillStyle = '#2c211a';
+    ctx.fillText('( นายพัฒนวิทย์ อุดมศิลป์ )', 910, 1345);
+    ctx.fillStyle = '#7d6e65';
+    ctx.font = '12px Prompt, sans-serif';
+    ctx.fillText('ตำแหน่ง: ประธานวิสาหกิจชุมชนแปรรูปกาแฟ 456', 910, 1370);
+
+    // Mock signature for President
+    ctx.strokeStyle = '#053f1d';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(910, 1295, 18, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.font = 'italic 16px Courier, sans-serif';
+    ctx.fillStyle = '#053f1d';
+    ctx.fillText('Pattana', 910, 1300);
+
+    // Red Stamp Seal over President signature
+    ctx.beginPath();
+    ctx.arc(960, 1330, 40, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(220, 53, 69, 0.4)';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.font = 'bold 8px Prompt, sans-serif';
+    ctx.fillStyle = 'rgba(220, 53, 69, 0.4)';
+    ctx.fillText('วิสาหกิจชุมชน 456', 960, 1325);
+    ctx.fillText('กาแฟกาฬสินธุ์', 960, 1338);
+
+    // ----------------------------------------------------
+    // FOOTER AREA
+    // ----------------------------------------------------
+    ctx.fillStyle = '#3d271d';
+    ctx.fillRect(32, 1600, w - 64, 68);
+
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#faf7f2';
+    ctx.font = '11px Prompt, sans-serif';
+    ctx.fillText('📍 สถานที่ติดต่อ: วิสาหกิจชุมชนแปรรูปกาแฟ 456 เลขที่ 36 หมู่ 4 ต.กุดสิม อ.กุฉินารายณ์ จ.กาฬสินธุ์ 46110', 60, 1625);
+    ctx.fillText('📞 โทรศัพท์: 098-565-2966   |   🌐 Facebook: 456 Caffe กาแฟกาฬสินธุ์บ้านเฮา', 60, 1645);
+
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#c5a880';
+    ctx.font = 'bold 14px Prompt, sans-serif';
+    ctx.fillText('“ปลูกวันนี้ เพื่ออนาคตที่ยั่งยืน”', 1120, 1638);
+
+    // Trigger jsPDF conversion and callback
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'pt', 'a4');
+    const pdfWidth = doc.internal.pageSize.getWidth();
+    const pdfHeight = doc.internal.pageSize.getHeight();
+    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+    
+    doc.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+    
+    if (callback) {
+        callback(doc);
+    }
+}
+
+function drawRoundedRect(ctx, x, y, width, height, radius, fill, stroke) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+    if (fill) ctx.fill();
+    if (stroke) ctx.stroke();
+}
+
+function drawNumberBadge(ctx, num, x, y) {
+    ctx.fillStyle = '#c5a880';
+    ctx.beginPath();
+    ctx.arc(x + 14, y + 14, 14, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 12px Prompt, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(num, x + 14, y + 18);
+}
+
+function drawIconFeature(ctx, emoji, label, x, y) {
+    ctx.fillStyle = '#fdfbf7';
+    ctx.strokeStyle = 'rgba(61, 39, 29, 0.08)';
+    ctx.lineWidth = 1;
+    drawRoundedRect(ctx, x, y, 100, 64, 8, true, true);
+    
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#3d271d';
+    ctx.font = '20px Prompt, sans-serif';
+    ctx.fillText(emoji, x + 50, y + 30);
+    
+    ctx.font = 'bold 10px Prompt, sans-serif';
+    ctx.fillStyle = '#7d6e65';
+    ctx.fillText(label, x + 50, y + 50);
+}
+
+function drawCoffeeBranch(ctx, x, y) {
+    ctx.strokeStyle = '#5c4033'; // branch color
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(x, y - 40);
+    ctx.quadraticCurveTo(x - 20, y, x, y + 40);
+    ctx.stroke();
+    
+    ctx.fillStyle = '#2c5e43';
+    ctx.beginPath();
+    ctx.ellipse(x - 15, y - 20, 15, 8, -Math.PI / 4, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.beginPath();
+    ctx.ellipse(x + 15, y + 10, 15, 8, Math.PI / 6, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.fillStyle = '#d9534f';
+    ctx.beginPath();
+    ctx.arc(x - 4, y, 6, 0, Math.PI * 2);
+    ctx.arc(x + 4, y - 8, 6, 0, Math.PI * 2);
+    ctx.arc(x, y + 8, 6, 0, Math.PI * 2);
+    ctx.arc(x + 6, y + 2, 5, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function drawTextLineWithDots(ctx, label, val, x, y, w, dotColor='#c5a880', labelColor='#7d6e65', valColor='#2c211a') {
+    ctx.textAlign = 'left';
+    ctx.font = '16px Prompt, sans-serif';
+    
+    // 1. Draw Label
+    ctx.fillStyle = labelColor;
+    ctx.fillText(label, x, y);
+    const labelWidth = ctx.measureText(label).width;
+    
+    // 2. Draw dots in the space between label and the right edge
+    ctx.fillStyle = dotColor;
+    ctx.textAlign = 'right';
+    let dotsStr = "";
+    const dotsCount = Math.floor((w - labelWidth - 10) / 4);
+    for(let i=0; i<dotsCount; i++) dotsStr += ".";
+    ctx.fillText(dotsStr, x + w, y - 2);
+    
+    // 3. Draw Value on top of the dots (left aligned after label)
+    ctx.textAlign = 'left';
+    ctx.fillStyle = valColor;
+    ctx.font = 'bold 16px Prompt, sans-serif';
+    ctx.fillText(val || "", x + labelWidth + 10, y - 2);
+}
+
+function thaiBahtText(num) {
+    if (num === 0) return "ศูนย์บาทถ้วน";
+    const THAI_NUMBER = ["ศูนย์", "หนึ่ง", "สอง", "สาม", "สี่", "ห้า", "หก", "เจ็ด", "แปด", "เก้า"];
+    const THAI_UNIT = ["", "สิบ", "ร้อย", "พัน", "หมื่น", "แสน", "ล้าน"];
+    
+    let text = "";
+    const numStr = String(num);
+    const len = numStr.length;
+    
+    for (let i = 0; i < len; i++) {
+        const digit = parseInt(numStr.charAt(i));
+        const pos = len - i - 1;
+        
+        if (digit !== 0) {
+            if (pos === 1 && digit === 2) {
+                text += "ยี่";
+            } else if (pos === 1 && digit === 1) {
+                text += "";
+            } else if (pos === 0 && digit === 1 && len > 1 && numStr.charAt(i - 1) !== '0') {
+                text += "เอ็ด";
+            } else {
+                text += THAI_NUMBER[digit];
+            }
+            text += THAI_UNIT[pos];
+        }
+    }
+    return text + "บาทถ้วน";
+}
+
+function getThaiMonthName(idx) {
+    const months = [
+        "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+        "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+    ];
+    return months[idx];
 }
 
 function drawCornerDecors(ctx, w, h) {
@@ -903,14 +1330,6 @@ function drawCornerDecors(ctx, w, h) {
     // Bottom-Right Corner
     ctx.fillRect(w - offset - size, h - offset, size, 4);
     ctx.fillRect(w - offset, h - offset - size, 4, size);
-}
-
-function getThaiMonthName(idx) {
-    const months = [
-        "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
-        "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
-    ];
-    return months[idx];
 }
 
 /* ==========================================================================

@@ -269,20 +269,29 @@
                 <!-- Wizard Steps Form -->
                 <form id="registration-form" onsubmit="return false;">
                     
-                    <!-- STEP 1: Welcome & Basic Info -->
+                    <!-- STEP 1: Applicant Info -->
                     <div class="wizard-step active-step" id="step-1">
-                        <div class="step-content text-center">
-                            <div class="welcome-badge">ยินดีต้อนรับเข้าสู่ระบบจอง</div>
-                            <h3 class="step-title">กรุณากรอกชื่อ-นามสกุลของคุณ</h3>
-                            <p class="step-desc">ชื่อนี้จะปรากฏในใบสำคัญตกลงร่วมมือ (MOU) และป้ายชื่อต้นกาแฟ</p>
+                        <div class="step-content">
+                            <div class="welcome-badge text-center" style="display: block; margin: 0 auto 20px auto; width: fit-content;">ยินดีต้อนรับเข้าสู่ระบบจอง</div>
+                            <h3 class="step-title text-center">ข้อมูลผู้จอง</h3>
+                            <p class="step-desc text-center">กรุณากรอกชื่อและเลขประจำตัวเพื่อใช้ออกใบสำคัญ MOU</p>
                             
                             <div class="form-group">
-                                <label for="input-fullname" class="form-label">ชื่อ - นามสกุล *</label>
+                                <label for="input-fullname" class="form-label">ชื่อ - นามสกุล / หน่วยงาน *</label>
                                 <div class="input-wrapper">
                                     <i class="fa-solid fa-user input-icon"></i>
-                                    <input type="text" id="input-fullname" class="form-input" placeholder="ตัวอย่าง: สมชาย รักดี" required>
+                                    <input type="text" id="input-fullname" class="form-input" placeholder="ตัวอย่าง: นายสมชาย รักดี หรือ บริษัท รักดี จำกัด" required>
                                 </div>
-                                <span class="error-msg" id="err-fullname">กรุณากรอกชื่อ-นามสกุล</span>
+                                <span class="error-msg" id="err-fullname">กรุณากรอกชื่อ-นามสกุล หรือชื่อหน่วยงาน</span>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label for="input-citizenid" class="form-label">เลขบัตรประชาชน / เลขทะเบียนนิติบุคคล *</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-id-card input-icon"></i>
+                                    <input type="text" id="input-citizenid" class="form-input" placeholder="กรอกเลข 13 หลัก (ตัวอย่าง: 1234567890123)" required>
+                                </div>
+                                <span class="error-msg" id="err-citizenid">กรุณากรอกเลขประจำตัวประชาชน/นิติบุคคล 13 หลักให้ถูกต้อง</span>
                             </div>
 
                             <div class="step-buttons">
@@ -292,12 +301,12 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- STEP 2: Phone Number -->
+ 
+                    <!-- STEP 2: Contact Info -->
                     <div class="wizard-step" id="step-2">
-                        <div class="step-content text-center">
-                            <h3 class="step-title">เบอร์โทรศัพท์สำหรับติดต่อ</h3>
-                            <p class="step-desc">เพื่อใช้ประสานงานและแจ้งข่าวสารความคืบหน้าโครงการ</p>
+                        <div class="step-content">
+                            <h3 class="step-title text-center">ข้อมูลการติดต่อ</h3>
+                            <p class="step-desc text-center">ระบุเบอร์โทรศัพท์และ LINE ID สำหรับประสานงานโครงการ</p>
                             
                             <div class="form-group">
                                 <label for="input-phone" class="form-label">เบอร์โทรศัพท์ *</label>
@@ -306,6 +315,15 @@
                                     <input type="tel" id="input-phone" class="form-input" placeholder="ตัวอย่าง: 0985652966" required>
                                 </div>
                                 <span class="error-msg" id="err-phone">กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (10 หลัก)</span>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label for="input-lineid" class="form-label">LINE ID *</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-brands fa-line input-icon" style="color: #06C755;"></i>
+                                    <input type="text" id="input-lineid" class="form-input" placeholder="ตัวอย่าง: lineid123" required>
+                                </div>
+                                <span class="error-msg" id="err-lineid">กรุณากรอก LINE ID</span>
                             </div>
 
                             <div class="step-buttons">
@@ -318,20 +336,29 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- STEP 3: Line ID -->
+ 
+                    <!-- STEP 3: Address & Location Info -->
                     <div class="wizard-step" id="step-3">
-                        <div class="step-content text-center">
-                            <h3 class="step-title">กรอก LINE ID ของคุณ</h3>
-                            <p class="step-desc">สำหรับรับรายงานภาพความคืบหน้าและการส่งใบสำคัญ MOU</p>
+                        <div class="step-content">
+                            <h3 class="step-title text-center">ข้อมูลที่อยู่และพื้นที่ปลูก</h3>
+                            <p class="step-desc text-center">ระบุที่อยู่ติดต่อและสถานที่ตั้งของแปลงสำหรับจองเข้าร่วมโครงการ</p>
                             
                             <div class="form-group">
-                                <label for="input-lineid" class="form-label">LINE ID *</label>
+                                <label for="input-address" class="form-label">ที่อยู่สำหรับติดต่อ *</label>
                                 <div class="input-wrapper">
-                                    <i class="fa-brands fa-line input-icon" style="color: #06C755;"></i>
-                                    <input type="text" id="input-lineid" class="form-input" placeholder="ตัวอย่าง: lineid123" required>
+                                    <i class="fa-solid fa-house input-icon"></i>
+                                    <input type="text" id="input-address" class="form-input" placeholder="ตัวอย่าง: 36 หมู่ 4 ต.กุดสิมคุ้มใหม่ อ.เขาวง จ.กาฬสินธุ์" required>
                                 </div>
-                                <span class="error-msg" id="err-lineid">กรุณากรอก LINE ID</span>
+                                <span class="error-msg" id="err-address">กรุณากรอกที่อยู่สำหรับติดต่อ</span>
+                            </div>
+
+                            <div class="form-group mt-3">
+                                <label for="input-plantingarea" class="form-label">สถานที่ตั้งแปลงปลูกกาแฟ (ระบุอำเภอ/จังหวัด) *</label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-map-location-dot input-icon"></i>
+                                    <input type="text" id="input-plantingarea" class="form-input" placeholder="ตัวอย่าง: แปลงทดลอง อ.เขาวง จ.กาฬสินธุ์" required>
+                                </div>
+                                <span class="error-msg" id="err-plantingarea">กรุณากรอกข้อมูลพื้นที่ตั้งแปลงปลูก</span>
                             </div>
 
                             <div class="step-buttons">
@@ -344,15 +371,15 @@
                             </div>
                         </div>
                     </div>
-
+ 
                     <!-- STEP 4: Email -->
                     <div class="wizard-step" id="step-4">
                         <div class="step-content text-center">
                             <h3 class="step-title">กรอกที่อยู่อีเมล</h3>
-                            <p class="step-desc">ระบบจะส่งไฟล์ PDF MOU และข้อมูลลงทะเบียนเข้าสู่อีเมลนี้ (หากไม่มีให้พิมพ์ -)</p>
+                            <p class="step-desc">ระบบจะจัดส่งเอกสารสำคัญ MOU (PDF) ที่ลงนามสมบูรณ์เข้าสู่อีเมลนี้โดยอัตโนมัติ</p>
                             
                             <div class="form-group">
-                                <label for="input-email" class="form-label">อีเมล (หากไม่มีกรอก "-") *</label>
+                                <label for="input-email" class="form-label">อีเมลสำหรับรับเอกสาร MOU (หากไม่มีกรอก "-") *</label>
                                 <div class="input-wrapper">
                                     <i class="fa-solid fa-envelope input-icon"></i>
                                     <input type="text" id="input-email" class="form-input" placeholder="ตัวอย่าง: email@domain.com หรือ -" required>
@@ -480,8 +507,12 @@
                             
                             <div class="confirm-grid">
                                 <div class="confirm-item">
-                                    <span class="confirm-label">ชื่อ-นามสกุล:</span>
+                                    <span class="confirm-label">ชื่อ-นามสกุล/หน่วยงาน:</span>
                                     <span class="confirm-value" id="confirm-name">-</span>
+                                </div>
+                                <div class="confirm-item">
+                                    <span class="confirm-label">เลขประจำตัว 13 หลัก:</span>
+                                    <span class="confirm-value" id="confirm-citizenid">-</span>
                                 </div>
                                 <div class="confirm-item">
                                     <span class="confirm-label">เบอร์โทรศัพท์:</span>
@@ -490,6 +521,14 @@
                                 <div class="confirm-item">
                                     <span class="confirm-label">LINE ID:</span>
                                     <span class="confirm-value" id="confirm-line">-</span>
+                                </div>
+                                <div class="confirm-item">
+                                    <span class="confirm-label">ที่อยู่จัดส่ง/ติดต่อ:</span>
+                                    <span class="confirm-value" id="confirm-address">-</span>
+                                </div>
+                                <div class="confirm-item">
+                                    <span class="confirm-label">สถานที่แปลงปลูก:</span>
+                                    <span class="confirm-value" id="confirm-plantingarea">-</span>
                                 </div>
                                 <div class="confirm-item">
                                     <span class="confirm-label">อีเมล:</span>
@@ -702,13 +741,16 @@
                                     <th>Timestamp</th>
                                     <th>Member ID</th>
                                     <th>ชื่อ - นามสกุล</th>
+                                    <th>เลขประจำตัว</th>
                                     <th>เบอร์โทรศัพท์</th>
                                     <th>LINE ID</th>
+                                    <th>ที่อยู่</th>
                                     <th>อีเมล</th>
                                     <th>ประเภทกล้า</th>
                                     <th>หน่วยการจอง</th>
                                     <th>จำนวนจอง</th>
                                     <th>ยอดรวม (บาท)</th>
+                                    <th>พื้นที่แปลงปลูก</th>
                                     <th>สถานะ PDF</th>
                                 </tr>
                             </thead>
@@ -718,39 +760,48 @@
                                     <td>10/11/2025 10:30</td>
                                     <td>456-2026-0001</td>
                                     <td>คุณรุ่งทิวา แสนดี</td>
+                                    <td>120XXXXXXXXXX</td>
                                     <td>081-XXXX-XXX</td>
                                     <td>rung.line</td>
+                                    <td>อ.เมือง จ.กาฬสินธุ์</td>
                                     <td>rung@gmail.com</td>
                                     <td>1-2 เดือน</td>
                                     <td>ต้น</td>
                                     <td>20</td>
                                     <td>1,000</td>
+                                    <td>แปลงสาธิต อ.เขาวง จ.กาฬสินธุ์</td>
                                     <td><span class="badge badge-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span></td>
                                 </tr>
                                 <tr>
                                     <td>10/11/2025 10:35</td>
                                     <td>456-2026-0002</td>
                                     <td>บริษัท คอฟฟี่เลิฟเวอร์ จำกัด</td>
+                                    <td>010XXXXXXXXXX</td>
                                     <td>085-XXXX-XXX</td>
                                     <td>coffeelove</td>
+                                    <td>กรุงเทพมหานคร</td>
                                     <td>contact@coffeelove.co.th</td>
                                     <td>1 ปี</td>
                                     <td>ต้น</td>
                                     <td>50</td>
                                     <td>5,000</td>
+                                    <td>แปลงจอง อ.นาคู จ.กาฬสินธุ์</td>
                                     <td><span class="badge badge-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span></td>
                                 </tr>
                                 <tr>
                                     <td>10/11/2025 11:12</td>
                                     <td>456-2026-0003</td>
                                     <td>คุณพิมใจ แก้ววิเศษ</td>
+                                    <td>340XXXXXXXXXX</td>
                                     <td>090-XXXX-XXX</td>
                                     <td>pimjai.456</td>
+                                    <td>อ.กมลาไสย จ.กาฬสินธุ์</td>
                                     <td>pimjai@gmail.com</td>
                                     <td>1-2 เดือน</td>
                                     <td>ต้น</td>
                                     <td>10</td>
                                     <td>500</td>
+                                    <td>แปลงสมาชิก อ.เขาวง จ.กาฬสินธุ์</td>
                                     <td><span class="badge badge-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span></td>
                                 </tr>
                             </tbody>
