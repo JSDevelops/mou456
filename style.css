@@ -1767,6 +1767,99 @@ img {
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* Pricing Interactive Option Cards */
+.pricing-options-group {
+    margin-bottom: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-align: left;
+}
+
+.pricing-option-card-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label-bold {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-primary-medium);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pricing-cards-container {
+    display: flex;
+    gap: 16px;
+}
+
+.pricing-card {
+    flex: 1;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.55);
+    border: 2px solid rgba(61, 39, 29, 0.08);
+    border-radius: var(--border-radius-md);
+    padding: 16px;
+    transition: var(--transition-smooth);
+    position: relative;
+    user-select: none;
+    display: flex;
+    align-items: center;
+}
+
+.pricing-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.pricing-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+    gap: 6px;
+}
+
+.pricing-card .card-icon {
+    font-size: 1.5rem;
+    color: var(--color-text-muted);
+    transition: var(--transition-smooth);
+}
+
+.pricing-card .card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-primary-dark);
+}
+
+.pricing-card .card-price-desc {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+/* Hover and Active states */
+.pricing-card:hover {
+    border-color: rgba(197, 168, 128, 0.5);
+    background: rgba(255, 255, 255, 0.85);
+}
+
+.pricing-card.active {
+    border-color: var(--color-accent-gold);
+    background: var(--color-bg-white);
+    box-shadow: 0 4px 12px rgba(61, 39, 29, 0.05);
+}
+
+.pricing-card.active .card-icon {
+    color: var(--color-accent-gold);
+}
+
 /* ==========================================================================
    RESPONSIVE LAYOUT MEDIA QUERIES
    ========================================================================== */
@@ -1886,3 +1979,11 @@ img {
         width: 100%;
     }
 }
+
+@media (max-width: 576px) {
+    .pricing-cards-container {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+

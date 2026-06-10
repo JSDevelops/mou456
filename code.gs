@@ -34,7 +34,7 @@ function doPost(e) {
     var spreadsheetId = "1sRp4veRSePaxlx0GFxD2OgBJOm0PUQyylTj3MqGxV6g";
     var sheet = SpreadsheetApp.openById(spreadsheetId).getSheets()[0];
     
-    // ตรวจสอบและสร้างหัวตาราง (Header) หากเป็นชีตเปล่า
+    // ตรวจสอบและสร้างหัวตาราง (Header)
     if (sheet.getLastRow() === 0) {
       sheet.appendRow([
         "Timestamp", 
@@ -43,15 +43,38 @@ function doPost(e) {
         "เบอร์โทรศัพท์", 
         "LINE ID", 
         "อีเมล", 
-        "จำนวนจอง (ต้น)", 
+        "ประเภทต้นกล้า",
+        "หน่วยการจอง",
+        "จำนวนจอง", 
         "ยอดรวม (บาท)"
       ]);
-      // ปรับแต่งหัวตารางให้สวยงาม
-      sheet.getRange(1, 1, 1, 8).setFontWeight("bold").setBackgroundColor("#f4eedf");
+      sheet.getRange(1, 1, 1, 10).setFontWeight("bold").setBackgroundColor("#f4eedf");
+    } else {
+      // ตรวจสอบและอัปเดตหัวตารางเป็นแบบใหม่ถ้ายังเป็นแบบ 8 คอลัมน์เดิมอยู่
+      var headerRange = sheet.getRange(1, 1, 1, sheet.getLastColumn() || 10);
+      var headerValues = headerRange.getValues()[0];
+      if (headerValues.indexOf("ประเภทต้นกล้า") === -1) {
+        // อัปเดตหัวตารางในแถวแรกใหม่ทั้งหมดเพื่อความเข้ากันได้ย้อนหลัง
+        sheet.getRange(1, 1, 1, 10).setValues([[
+          "Timestamp", 
+          "Member ID", 
+          "ชื่อ - นามสกุล", 
+          "เบอร์โทรศัพท์", 
+          "LINE ID", 
+          "อีเมล", 
+          "ประเภทต้นกล้า",
+          "หน่วยการจอง",
+          "จำนวนจอง", 
+          "ยอดรวม (บาท)"
+        ]]);
+        sheet.getRange(1, 1, 1, 10).setFontWeight("bold").setBackgroundColor("#f4eedf");
+      }
     }
     
     // เตรียมข้อมูลแถวใหม่เพื่อบันทึก
     var timestamp = new Date();
+    var seedlingType = requestData.seedlingType || "1-2 เดือน";
+    var bookingMode = requestData.bookingMode || "ต้น";
     var rowData = [
       timestamp,
       requestData.memberId,
@@ -59,6 +82,8 @@ function doPost(e) {
       requestData.phone,
       requestData.lineid,
       requestData.email,
+      seedlingType,
+      bookingMode,
       Number(requestData.qty),
       Number(requestData.total)
     ];

@@ -374,11 +374,58 @@
                     <!-- STEP 5: Quantity & Real-time Calculation -->
                     <div class="wizard-step" id="step-5">
                         <div class="step-content">
-                            <h3 class="step-title text-center">จำนวนต้นกาแฟที่ต้องการจอง</h3>
-                            <p class="step-desc text-center">ราคาจองร่วมสนับสนุนโครงการต้นละ <strong>100 บาท</strong> เท่านั้น</p>
+                            <h3 class="step-title text-center">กำหนดรายละเอียดการจอง</h3>
+                            <p class="step-desc text-center" id="pricing-subtitle">ร่วมสนับสนุนและระบุจำนวนตามเงื่อนไขราคาของท่าน</p>
+                            
+                            <!-- Seedling Age & Booking Mode Selection -->
+                            <div class="pricing-options-group">
+                                <div class="pricing-option-card-group">
+                                    <label class="form-label-bold"><i class="fa-solid fa-hourglass-half text-gold"></i> เลือกอายุต้นกล้า</label>
+                                    <div class="pricing-cards-container">
+                                        <label class="pricing-card active" id="card-age-1-2">
+                                            <input type="radio" name="seedling-age" value="1-2m" checked onchange="changeSeedlingAge('1-2m')">
+                                            <div class="pricing-card-content">
+                                                <span class="card-icon"><i class="fa-solid fa-seedling"></i></span>
+                                                <span class="card-title">อายุ 1-2 เดือน</span>
+                                                <span class="card-price-desc">รายไร่ 25.-/ไร่ | รายต้น 50.-/ต้น</span>
+                                            </div>
+                                        </label>
+                                        <label class="pricing-card" id="card-age-1y">
+                                            <input type="radio" name="seedling-age" value="1y" onchange="changeSeedlingAge('1y')">
+                                            <div class="pricing-card-content">
+                                                <span class="card-icon"><i class="fa-solid fa-tree"></i></span>
+                                                <span class="card-title">อายุ 1 ปี</span>
+                                                <span class="card-price-desc">รายไร่ 45.-/ไร่ | รายต้น 100.-/ต้น</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="pricing-option-card-group">
+                                    <label class="form-label-bold"><i class="fa-solid fa-sliders text-gold"></i> เลือกรูปแบบการจอง</label>
+                                    <div class="pricing-cards-container">
+                                        <label class="pricing-card" id="card-mode-rai">
+                                            <input type="radio" name="booking-mode" value="rai" onchange="changeBookingMode('rai')">
+                                            <div class="pricing-card-content">
+                                                <span class="card-icon"><i class="fa-solid fa-map"></i></span>
+                                                <span class="card-title">จองเป็นรายไร่</span>
+                                                <span class="card-price-desc">ระบุพื้นที่จอง (ไร่)</span>
+                                            </div>
+                                        </label>
+                                        <label class="pricing-card active" id="card-mode-tree">
+                                            <input type="radio" name="booking-mode" value="tree" checked onchange="changeBookingMode('tree')">
+                                            <div class="pricing-card-content">
+                                                <span class="card-icon"><i class="fa-solid fa-leaf"></i></span>
+                                                <span class="card-title">จองเป็นรายต้น</span>
+                                                <span class="card-price-desc">ระบุจำนวนต้นเดี่ยว (ต้น)</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                             
                             <div class="qty-control-area">
-                                <label for="input-qty" class="form-label text-center">จำนวนต้นกาแฟ (ต้น)</label>
+                                <label for="input-qty" class="form-label text-center" id="qty-input-label">จำนวนต้นกาแฟ (ต้น)</label>
                                 
                                 <div class="qty-counter">
                                     <button type="button" class="btn-qty-adjust" onclick="adjustQty(-1)"><i class="fa-solid fa-minus"></i></button>
@@ -388,7 +435,7 @@
 
                                 <div class="slider-wrapper">
                                     <input type="range" id="qty-slider" class="qty-slider" min="1" max="100" value="20" oninput="syncSliderToInput(this.value)">
-                                    <div class="slider-labels">
+                                    <div class="slider-labels" id="slider-labels-container">
                                         <span>1 ต้น</span>
                                         <span>50 ต้น</span>
                                         <span>100 ต้น</span>
@@ -400,12 +447,12 @@
                             <div class="receipt-card">
                                 <h4 class="receipt-header"><i class="fa-solid fa-calculator"></i> ตัวอย่างการคำนวณยอดเงิน</h4>
                                 <div class="receipt-row">
-                                    <span>จำนวนต้นกาแฟที่จอง:</span>
+                                    <span id="calc-qty-label">จำนวนที่จอง:</span>
                                     <span id="calc-qty">20 ต้น</span>
                                 </div>
                                 <div class="receipt-row">
-                                    <span>ราคาต่อต้น:</span>
-                                    <span>100 บาท</span>
+                                    <span id="calc-unit-label">ราคาต่อหน่วย:</span>
+                                    <span id="calc-unit-price">100 บาท</span>
                                 </div>
                                 <div class="receipt-divider"></div>
                                 <div class="receipt-row total-row">
@@ -448,8 +495,16 @@
                                     <span class="confirm-label">อีเมล:</span>
                                     <span class="confirm-value" id="confirm-email">-</span>
                                 </div>
+                                <div class="confirm-item">
+                                    <span class="confirm-label">อายุต้นกล้า:</span>
+                                    <span class="confirm-value" id="confirm-age">-</span>
+                                </div>
+                                <div class="confirm-item">
+                                    <span class="confirm-label">ประเภทการจอง:</span>
+                                    <span class="confirm-value" id="confirm-mode">-</span>
+                                </div>
                                 <div class="confirm-item highlight">
-                                    <span class="confirm-label">จำนวนต้นที่จอง:</span>
+                                    <span class="confirm-label" id="confirm-qty-label">จำนวนที่จอง:</span>
                                     <span class="confirm-value text-green" id="confirm-qty">0 ต้น</span>
                                 </div>
                                 <div class="confirm-item highlight">
@@ -650,7 +705,9 @@
                                     <th>เบอร์โทรศัพท์</th>
                                     <th>LINE ID</th>
                                     <th>อีเมล</th>
-                                    <th>จำนวนจอง (ต้น)</th>
+                                    <th>ประเภทกล้า</th>
+                                    <th>หน่วยการจอง</th>
+                                    <th>จำนวนจอง</th>
                                     <th>ยอดรวม (บาท)</th>
                                     <th>สถานะ PDF</th>
                                 </tr>
@@ -664,8 +721,10 @@
                                     <td>081-XXXX-XXX</td>
                                     <td>rung.line</td>
                                     <td>rung@gmail.com</td>
+                                    <td>1-2 เดือน</td>
+                                    <td>ต้น</td>
                                     <td>20</td>
-                                    <td>2,000</td>
+                                    <td>1,000</td>
                                     <td><span class="badge badge-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span></td>
                                 </tr>
                                 <tr>
@@ -675,6 +734,8 @@
                                     <td>085-XXXX-XXX</td>
                                     <td>coffeelove</td>
                                     <td>contact@coffeelove.co.th</td>
+                                    <td>1 ปี</td>
+                                    <td>ต้น</td>
                                     <td>50</td>
                                     <td>5,000</td>
                                     <td><span class="badge badge-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span></td>
@@ -686,8 +747,10 @@
                                     <td>090-XXXX-XXX</td>
                                     <td>pimjai.456</td>
                                     <td>pimjai@gmail.com</td>
+                                    <td>1-2 เดือน</td>
+                                    <td>ต้น</td>
                                     <td>10</td>
-                                    <td>1,000</td>
+                                    <td>500</td>
                                     <td><span class="badge badge-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span></td>
                                 </tr>
                             </tbody>

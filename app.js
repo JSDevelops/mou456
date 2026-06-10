@@ -23,8 +23,10 @@ let registrationData = {
     phone: '',
     lineid: '',
     email: '',
+    seedlingType: '1-2m', // '1-2m' or '1y'
+    bookingMode: 'tree', // 'tree' or 'rai'
     qty: 20,
-    total: 2000,
+    total: 1000,
     memberId: ''
 };
 
@@ -241,12 +243,17 @@ function populateConfirmationData() {
     document.getElementById('confirm-phone').innerText = registrationData.phone;
     document.getElementById('confirm-line').innerText = registrationData.lineid;
     document.getElementById('confirm-email').innerText = registrationData.email;
-    document.getElementById('confirm-qty').innerText = `${registrationData.qty} ต้น`;
+    document.getElementById('confirm-age').innerText = registrationData.seedlingType === '1-2m' ? '1-2 เดือน' : '1 ปี';
+    document.getElementById('confirm-mode').innerText = registrationData.bookingMode === 'rai' ? 'จองรายไร่' : 'จองรายต้น';
+    
+    const unitText = registrationData.bookingMode === 'rai' ? 'ไร่' : 'ต้น';
+    document.getElementById('confirm-qty-label').innerText = registrationData.bookingMode === 'rai' ? 'จำนวนพื้นที่ที่จอง:' : 'จำนวนต้นที่จอง:';
+    document.getElementById('confirm-qty').innerText = `${registrationData.qty} ${unitText}`;
     document.getElementById('confirm-total').innerText = `${registrationData.total.toLocaleString()} บาท`;
 }
 
 /* ==========================================================================
-   CALCULATOR LOGIC
+   CALCULATOR LOGIC & PRICING
    ========================================================================== */
 function initCalculator() {
     const qtyInput = document.getElementById('input-qty');
@@ -255,6 +262,67 @@ function initCalculator() {
     if (qtyInput && qtySlider) {
         updateCalculator();
     }
+}
+
+function changeSeedlingAge(age) {
+    registrationData.seedlingType = age;
+    
+    // Update active UI classes
+    document.getElementById('card-age-1-2').classList.toggle('active', age === '1-2m');
+    document.getElementById('card-age-1y').classList.toggle('active', age === '1y');
+    
+    updateCalculator();
+}
+
+function changeBookingMode(mode) {
+    registrationData.bookingMode = mode;
+    
+    // Update active UI classes
+    document.getElementById('card-mode-rai').classList.toggle('active', mode === 'rai');
+    document.getElementById('card-mode-tree').classList.toggle('active', mode === 'tree');
+    
+    // Update labels and inputs dynamically
+    const qtyInputLabel = document.getElementById('qty-input-label');
+    const calcQtyLabel = document.getElementById('calc-qty-label');
+    const calcUnitLabel = document.getElementById('calc-unit-label');
+    const qtySlider = document.getElementById('qty-slider');
+    const sliderLabels = document.getElementById('slider-labels-container');
+    
+    if (mode === 'rai') {
+        qtyInputLabel.innerText = "จำนวนพื้นที่จอง (ไร่)";
+        calcQtyLabel.innerText = "พื้นที่จองสะสม:";
+        calcUnitLabel.innerText = "ราคาต่อไร่:";
+        
+        // Update slider values for Rai
+        qtySlider.min = 1;
+        qtySlider.max = 50;
+        if (parseInt(document.getElementById('input-qty').value) > 50) {
+            qtySlider.value = 50;
+        }
+        sliderLabels.innerHTML = `
+            <span>1 ไร่</span>
+            <span>25 ไร่</span>
+            <span>50 ไร่</span>
+        `;
+    } else {
+        qtyInputLabel.innerText = "จำนวนต้นกาแฟ (ต้น)";
+        calcQtyLabel.innerText = "จำนวนต้นกาแฟที่จอง:";
+        calcUnitLabel.innerText = "ราคาต่อต้น:";
+        
+        // Update slider values for Trees
+        qtySlider.min = 1;
+        qtySlider.max = 100;
+        if (parseInt(document.getElementById('input-qty').value) > 100) {
+            qtySlider.value = 100;
+        }
+        sliderLabels.innerHTML = `
+            <span>1 ต้น</span>
+            <span>50 ต้น</span>
+            <span>100 ต้น</span>
+        `;
+    }
+    
+    updateCalculator();
 }
 
 function adjustQty(amount) {
@@ -267,9 +335,10 @@ function adjustQty(amount) {
     
     qtyInput.value = val;
     
-    // Sync slider (up to 100 on slider visual)
+    // Sync slider based on its dynamic max value
     const qtySlider = document.getElementById('qty-slider');
-    qtySlider.value = val > 100 ? 100 : val;
+    const maxVal = parseInt(qtySlider.max) || 100;
+    qtySlider.value = val > maxVal ? maxVal : val;
     
     updateCalculator();
 }
@@ -286,12 +355,25 @@ function updateCalculator() {
     
     if (qty < 1) qty = 1;
     
-    const total = qty * 100;
+    const seedlingType = registrationData.seedlingType || '1-2m';
+    const bookingMode = registrationData.bookingMode || 'tree';
+    
+    let pricePerUnit = 50;
+    if (seedlingType === '1-2m') {
+        pricePerUnit = bookingMode === 'rai' ? 25 : 50;
+    } else {
+        pricePerUnit = bookingMode === 'rai' ? 45 : 100;
+    }
+    
+    const total = qty * pricePerUnit;
     
     registrationData.qty = qty;
     registrationData.total = total;
     
-    document.getElementById('calc-qty').innerText = `${qty} ต้น`;
+    const unitText = bookingMode === 'rai' ? 'ไร่' : 'ต้น';
+    
+    document.getElementById('calc-qty').innerText = `${qty} ${unitText}`;
+    document.getElementById('calc-unit-price').innerText = `${pricePerUnit} บาท`;
     document.getElementById('calc-total').innerText = `${total.toLocaleString()} บาท`;
 }
 
@@ -339,6 +421,8 @@ function submitRegistration() {
                 phone: registrationData.phone,
                 lineid: registrationData.lineid,
                 email: registrationData.email,
+                seedlingType: registrationData.seedlingType === '1-2m' ? '1-2 เดือน' : '1 ปี',
+                bookingMode: registrationData.bookingMode === 'rai' ? 'ไร่' : 'ต้น',
                 qty: registrationData.qty,
                 total: registrationData.total
             })
@@ -411,6 +495,18 @@ function restartWizard() {
     document.getElementById('input-email').value = '';
     document.getElementById('input-qty').value = '20';
     document.getElementById('qty-slider').value = '20';
+    
+    // Reset pricing options to default: 1-2m and tree
+    registrationData.seedlingType = '1-2m';
+    registrationData.bookingMode = 'tree';
+    
+    // Reset radio buttons in UI
+    document.querySelector('input[name="seedling-age"][value="1-2m"]').checked = true;
+    document.querySelector('input[name="booking-mode"][value="tree"]').checked = true;
+    
+    // Toggle active class on cards
+    changeSeedlingAge('1-2m');
+    changeBookingMode('tree');
     
     updateCalculator();
     goToStep(1);
@@ -505,6 +601,9 @@ function appendDataToSheetTable() {
     // Mask phone number for dashboard visual
     const maskedPhone = registrationData.phone.replace(/(\d{3})-(\d{3})-(\d{4})/, '$1-XXX-$3');
     
+    const seedlingText = registrationData.seedlingType === '1-2m' ? '1-2 เดือน' : '1 ปี';
+    const modeText = registrationData.bookingMode === 'rai' ? 'ไร่' : 'ต้น';
+    
     row.innerHTML = `
         <td>${dateStr}</td>
         <td><strong>${registrationData.memberId}</strong></td>
@@ -512,6 +611,8 @@ function appendDataToSheetTable() {
         <td>${maskedPhone}</td>
         <td>${registrationData.lineid}</td>
         <td>${registrationData.email}</td>
+        <td>${seedlingText}</td>
+        <td>${modeText}</td>
         <td>${registrationData.qty}</td>
         <td>${registrationData.total.toLocaleString()}</td>
         <td><span class="badge badge-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</span></td>
@@ -688,7 +789,10 @@ function generateMOUPDF() {
         ctx.fillStyle = '#2c211a';
         ctx.font = '18px Prompt, sans-serif';
         ctx.fillText(`รหัสสมาชิกประจำตัว: ${registrationData.memberId}`, canvas.width / 2, 385);
-        ctx.fillText(`ได้ร่วมสนับสนุนต้นกาแฟจำนวน ${registrationData.qty} ต้น  เป็นมูลค่ารวม ${registrationData.total.toLocaleString()} บาท`, canvas.width / 2, 425);
+        
+        const unitName = registrationData.bookingMode === 'rai' ? 'ไร่' : 'ต้น';
+        const seedlingAgeText = registrationData.seedlingType === '1-2m' ? '1-2 เดือน' : '1 ปี';
+        ctx.fillText(`ได้ร่วมสนับสนุนกล้ากาแฟอายุ ${seedlingAgeText} จำนวน ${registrationData.qty} ${unitName}  เป็นมูลค่ารวม ${registrationData.total.toLocaleString()} บาท`, canvas.width / 2, 425);
         ctx.fillText('เพื่อร่วมสร้างผืนป่ากาแฟ สร้างอาชีพ และสร้างรายได้ที่ยั่งยืนให้แก่เกษตรกรท้องถิ่น จังหวัดกาฬสินธุ์', canvas.width / 2, 465);
 
         // Signatures Area
