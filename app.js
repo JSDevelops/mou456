@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCalculator();
     initDashboardChart();
     setupPDFDownloadMock();
+    fetchDashboardData();
 });
 
 /* ==========================================================================
@@ -509,11 +510,8 @@ function showSuccessScreen() {
         });
     }
     
-    // Update live metrics on Dashboard
-    updateDashboardMetrics();
-    
-    // Append to mock Google Sheet Table
-    appendDataToSheetTable();
+    // Update live metrics on Dashboard directly from Google Sheet
+    fetchDashboardData();
 }
 
 function restartWizard() {
@@ -1361,4 +1359,174 @@ function switchBenefitTab(tabName) {
     });
     const targetImg = document.getElementById(`img-${tabName}`);
     if (targetImg) targetImg.classList.add('active-img');
+}
+
+/* ==========================================================================
+   DYNAMIC GOOGLE SHEET SYNCHRONIZATION
+   ========================================================================== */
+function fetchDashboardData() {
+    if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === "") return;
+    
+    fetch(GOOGLE_SCRIPT_URL)
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "success") {
+                totalMembers = data.totalMembers;
+                totalTrees = data.totalTrees;
+                totalValue = data.totalValue;
+                todayRegistrations = data.todayRegistrations;
+                nextMemberIndex = totalMembers + 1;
+                
+                // Update Dashboard DOM metrics
+                updateDashboardDOM();
+                
+                // Populate log table
+                populateLogTable(data.registrations);
+                
+                // Recalculate top supporters
+                rebuildTopSupporters(data.registrations);
+                
+                // Recalculate and update chart
+                rebuildChart(data.registrations);
+            }
+        })
+        .catch(err => {
+            console.error("Error fetching dashboard data:", err);
+        });
+}
+
+function updateDashboardDOM() {
+    const pct = (totalTrees / 4560) * 100;
+    
+    const targetProgress = document.getElementById('target-progress');
+    if (targetProgress) targetProgress.style.width = `${Math.min(pct, 100)}%`;
+    
+    const statsSpan = document.querySelector('.progress-stats span:first-child');
+    if (statsSpan) statsSpan.innerText = `จองแล้ว ${totalTrees.toLocaleString()} ต้น (${pct.toFixed(1)}%)`;
+    
+    const remainingSpan = document.querySelector('.progress-stats span:last-child');
+    if (remainingSpan) remainingSpan.innerText = `คงเหลือ ${Math.max(4560 - totalTrees, 0).toLocaleString()} ต้น`;
+    
+    // Dashboard Cards
+    const dashMembers = document.getElementById('dash-members');
+    if (dashMembers) dashMembers.innerHTML = `${totalMembers} <small>คน</small>`;
+    
+    const dashTrees = document.getElementById('dash-trees');
+    if (dashTrees) dashTrees.innerHTML = `${totalTrees.toLocaleString()} <small>ต้น</small>`;
+    
+    const dashTreesPct = document.getElementById('dash-trees-percentage');
+    if (dashTreesPct) dashTreesPct.innerText = `${pct.toFixed(1)}% จากเป้าหมายโครงการ`;
+    
+    const dashValue = document.getElementById('dash-value');
+    if (dashValue) dashValue.innerHTML = `${totalValue.toLocaleString()} <small>บาท</small>`;
+    
+    const dashToday = document.getElementById('dash-today');
+    if (dashToday) dashToday.innerHTML = `${todayRegistrations} <small>คน</small>`;
+}
+
+function populateLogTable(registrations) {
+    const tableBody = document.getElementById('sheet-table-body');
+    if (!tableBody) return;
+    tableBody.innerHTML = ''; // Clear existing
+    
+    // Sort registrations descending by date (newest first)
+    const sorted = [...registrations].sort((a, b) => {
+        return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+    });
+    
+    sorted.forEach(reg => {
+        const row = document.createElement('tr');
+        const date = new Date(reg.timestamp);
+        const dateStr = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+        
+        const maskedPhone = reg.phone.replace(/(\d{3})-(\d{3})-(\d{4})/, '$1-XXX-$3');
+        const maskedCitizen = reg.citizenid.replace(/(\d{3})\d{7}(\d{3})/, '$1XXXXXXX$2');
+        const maskedAddress = reg.address.length > 20 ? reg.address.substring(0, 18) + "..." : reg.address;
+        const maskedPlanting = reg.plantingarea.length > 20 ? reg.plantingarea.substring(0, 18) + "..." : reg.plantingarea;
+        
+        row.innerHTML = `
+            <td>${dateStr}</td>
+            <td><strong>${reg.memberId}</strong></td>
+            <td>${reg.fullname}</td>
+            <td>${maskedCitizen}</td>
+            <td>${maskedPhone}</td>
+            <td>${reg.lineid}</td>
+            <td>${maskedAddress}</td>
+            <td>${reg.email}</td>
+            <td>${reg.seedlingType}</td>
+            <td>${reg.bookingMode}</td>
+            <td>${reg.qty}</td>
+            <td>${reg.total.toLocaleString()}</td>
+            <td>${maskedPlanting}</td>
+            <td><a href="${reg.pdfUrl}" target="_blank" class="badge badge-pdf"><i class="fa-solid fa-file-pdf"></i> PDF</a></td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+function rebuildTopSupporters(registrations) {
+    const list = document.getElementById('supporters-list-container');
+    if (!list) return;
+    list.innerHTML = '';
+    
+    // Aggregate by user name
+    const agg = {};
+    registrations.forEach(reg => {
+        if (!agg[reg.fullname]) {
+            agg[reg.fullname] = { qty: 0, mode: reg.bookingMode };
+        }
+        agg[reg.fullname].qty += reg.qty;
+    });
+    
+    const supporters = Object.keys(agg).map(name => {
+        return {
+            name: name,
+            qty: agg[name].qty,
+            subtext: agg[name].mode === 'rai' ? "ผู้สนับสนุนจองรายไร่" : "สมาชิกจองออนไลน์รายย่อย"
+        };
+    });
+    
+    // Sort descending
+    supporters.sort((a, b) => b.qty - a.qty);
+    
+    // Render top 5
+    for (let i = 0; i < Math.min(supporters.length, 5); i++) {
+        const s = supporters[i];
+        let rankClass = "rank";
+        if (i === 0) rankClass = "rank first";
+        else if (i === 1) rankClass = "rank second";
+        else if (i === 2) rankClass = "rank third";
+        
+        const li = document.createElement('li');
+        li.className = 'supporter-item';
+        li.innerHTML = `
+            <span class="${rankClass}">${i + 1}</span>
+            <div class="supporter-info">
+                <strong>${s.name}</strong>
+                <span>${s.subtext}</span>
+            </div>
+            <span class="support-qty">${s.qty} ต้น</span>
+        `;
+        list.appendChild(li);
+    }
+}
+
+function rebuildChart(registrations) {
+    if (!monthlyChart) return;
+    
+    // Initialize months counts (January to July)
+    const counts = [0, 0, 0, 0, 0, 0, 0];
+    
+    registrations.forEach(reg => {
+        if (reg.timestamp) {
+            const date = new Date(reg.timestamp);
+            const month = date.getMonth(); // 0-11
+            if (month >= 0 && month <= 6) { // Jan-Jul
+                counts[month]++;
+            }
+        }
+    });
+    
+    monthlyChart.data.datasets[0].data = counts;
+    monthlyChart.update();
 }

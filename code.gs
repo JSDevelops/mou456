@@ -196,3 +196,99 @@ function doOptions(e) {
     .setMimeType(ContentService.MimeType.TEXT)
     .setHeaders(headers);
 }
+
+// รองรับคำขอ GET สำหรับดึงข้อมูลไปแสดงผลบน Dashboard
+function doGet(e) {
+  var headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Content-Type": "application/json"
+  };
+  
+  try {
+    var spreadsheetId = "1sRp4veRSePaxlx0GFxD2OgBJOm0PUQyylTj3MqGxV6g";
+    var sheet = SpreadsheetApp.openById(spreadsheetId).getSheets()[0];
+    var lastRow = sheet.getLastRow();
+    
+    var registrations = [];
+    var totalMembers = 0;
+    var totalTrees = 0;
+    var totalValue = 0;
+    var todayRegistrations = 0;
+    
+    var now = new Date();
+    var todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    
+    if (lastRow > 1) {
+      var dataRange = sheet.getRange(2, 1, lastRow - 1, 14);
+      var values = dataRange.getValues();
+      
+      for (var i = 0; i < values.length; i++) {
+        var row = values[i];
+        var timestamp = row[0];
+        var memberId = row[1];
+        var fullname = row[2];
+        var citizenid = row[3];
+        var phone = row[4];
+        var lineid = row[5];
+        var address = row[6];
+        var email = row[7];
+        var seedlingType = row[8];
+        var bookingMode = row[9];
+        var qty = Number(row[10]) || 0;
+        var total = Number(row[11]) || 0;
+        var plantingarea = row[12];
+        var pdfUrl = row[13];
+        
+        totalMembers++;
+        totalTrees += qty;
+        totalValue += total;
+        
+        // ตรวจสอบยอดสมัครวันนี้
+        if (timestamp) {
+          var date = new Date(timestamp);
+          if (date.getTime() >= todayStart) {
+            todayRegistrations++;
+          }
+        }
+        
+        registrations.push({
+          timestamp: timestamp ? timestamp.toISOString() : "",
+          memberId: memberId,
+          fullname: fullname,
+          citizenid: citizenid,
+          phone: phone,
+          lineid: lineid,
+          address: address,
+          email: email,
+          seedlingType: seedlingType,
+          bookingMode: bookingMode,
+          qty: qty,
+          total: total,
+          plantingarea: plantingarea,
+          pdfUrl: pdfUrl
+        });
+      }
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      status: "success",
+      totalMembers: totalMembers,
+      totalTrees: totalTrees,
+      totalValue: totalValue,
+      todayRegistrations: todayRegistrations,
+      registrations: registrations
+    }))
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeaders(headers);
+    
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      status: "error",
+      message: error.toString()
+    }))
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeaders(headers);
+  }
+}
